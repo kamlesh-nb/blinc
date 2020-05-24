@@ -7,11 +7,7 @@ const Todo = () => {
     }
     const view = (state, dispatch) => {
         return div({}, [
-            label({text: 'Hello World!!'}),
-            input({}),
-            div({},[
-                label({text: 'this is it'})
-            ])
+            label({text: 'WIP'})
         ])
     }   
  
@@ -21,6 +17,3 @@ const Todo = () => {
 let view = View(Todo())
 let $node = document.body
 view.mount($node)
- 
-var d = label({text: 'Hello   Universe !!'})
-console.log(d);  
