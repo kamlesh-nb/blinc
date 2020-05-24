@@ -9,7 +9,7 @@ tags.split(',').forEach((tag) => {
 
 export function setFieldValues(props = {}) {
   let fields = props
-  const setValue = (e) => {
+  const setValue = (event) => {
     fields[event.target.id] = event.target.value
   }
   return { fields, setValue }

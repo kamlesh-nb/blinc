@@ -246,7 +246,7 @@ const View = (props = {}) => {
 
 const App = (props = {}) => {
   let state = props.state || null;
-  let reducer = props.reducer || null;
+  let update = props.update || null;
   let navbar = props.navbar || null;
   let footer = props.footer || null;
   let main = props.main || null;
