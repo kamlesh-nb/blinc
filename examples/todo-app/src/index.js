@@ -8,9 +8,12 @@ import {
   h2,
   hr,
   span,
+  label,
   i,
   setFieldValues,
 } from "../../../dist/tags";
+
+import { addTodo, clearAll, removeTodo } from './messages'
 
 var initialState = {
   editText: "",
@@ -18,13 +21,7 @@ var initialState = {
   todos: [],
 };
 
-const addTodo = (todo, dispatch) => {
-  dispatch({ type: "ADD", payload: todo });
-};
 
-const removeTodo = (index, dispatch) => {
-  dispatch({ type: "DEL", payload: index });
-};
 
 const Todo = (props) => {
   let init = [initialState];
@@ -62,8 +59,8 @@ const Todo = (props) => {
     return div({ class: "container" }, [
       h2({ text: "Blinc To Do" }),
       state.todos.length == 0
-        ? `There's nothing you can do at the moment...`
-        : `Total Todos: ${state.todos.length}`,
+        ? label({text: `There's nothing you can do at the moment...`})
+        : span({text: `Total Todos: ${state.todos.length}`}),
       hr(),
       div({ class: "row" }, [
         div({ class: "col-md-10" }, [
@@ -75,7 +72,7 @@ const Todo = (props) => {
             class: "btn btn-primary",
             text: "Add",
             onclick: (e) => {
-              addTodo(fields, dispatch);
+              dispatch(addTodo(fields));
             },
           }),
         ]),
@@ -84,7 +81,7 @@ const Todo = (props) => {
             id: "clear",
             class: "btn btn-primary",
             text: "Clear",
-            onclick: () => {},
+            onclick: () => {dispatch(clearAll())},
           }),
         ]),
       ]),
@@ -102,7 +99,7 @@ const Todo = (props) => {
                     class: "btn btn-danger",
                     id: "del",
                     onclick: (e) => {
-                      removeTodo(v.id, dispatch);
+                      dispatch(removeTodo(v.id));
                     },
                     text: "Delete To Do   ",
                   },

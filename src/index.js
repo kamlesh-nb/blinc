@@ -88,7 +88,7 @@ const renderElement = (vNode) => {
 
   for (const [k, v] of Object.entries(vNode.attrs)) {
     if (typeof v === "function") {
-      $el.addEventListener(k.slice(2).toLowerCase(), v);
+      $el.addEventListener(k.slice(2), v);
     } else {
       if (k === "text") {
         $el.textContent = v;
@@ -117,10 +117,10 @@ const diffAttribs = (oNode, nNode, patches) => {
           }
         } else {
           oNode.elem.removeEventListener(
-            k.slice(2).toLowerCase(),
+            k.slice(2),
             oNode.attrs[k]
           );
-          oNode.elem.addEventListener(k.slice(2).toLowerCase(), v);
+          oNode.elem.addEventListener(k.slice(2), v);
         }
         oNode.attrs[k] = v;
       });
@@ -215,8 +215,8 @@ const View = (props = {}) => {
 
   const applyState = (nState) => {
     var vNewDom = view(nState, dispatch);
-    Object.assign(oState, nState);
     diffAndPatch(vOldDom, vNewDom);
+    Object.assign(oState, nState);
   };
 
   const dispatch = (msg) => {
