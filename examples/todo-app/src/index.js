@@ -13,15 +13,14 @@ import {
   setFieldValues,
 } from "../../../dist/tags";
 
-import { addTodo, clearAll, removeTodo } from './messages'
+import { addTodo, clearAll, removeTodo, sendCmd } from './messages'
+import { testCmd } from './effects/commands'
 
 var initialState = {
   editText: "",
   uid: 0,
   todos: [],
 };
-
-
 
 const Todo = (props) => {
   let init = [initialState];
@@ -49,6 +48,12 @@ const Todo = (props) => {
             todos: state.todos.filter((k) => k.id !== msg.payload),
           }),
         ];
+      case 'CMD':
+        return [state, [testCmd, msg.payload]]
+      case 'TO_UPPER':
+        return [
+          Object.assign({}, state, { todos: state.todos.map(todo => (todo.id == msg.payload.id) ? {id: todo.id, title: todo.title.toUpperCase()} : todo)})
+        ]
       default:
         return [state];
     }
@@ -92,7 +97,7 @@ const Todo = (props) => {
           return li({ class: "list-group-item", key: v.id }, [
             div({ class: "row" }, [
               div({ class: "col-md-1" }, [span({ text: v.id })]),
-              div({ class: "col-md-9" }, [span({ text: v.title })]),
+              div({ class: "col-md-7" }, [span({ text: v.title })]),
               div({ class: "col-md-2" }, [
                 button(
                   {
@@ -106,13 +111,23 @@ const Todo = (props) => {
                   [i({ class: "far fa-trash-alt" })]
                 ),
               ]),
+              div({ class: "col-md-2" }, [
+                button(
+                  {
+                    class: "btn btn-success",
+                    id: "cmd",
+                    onclick: (e) => {dispatch(sendCmd(v.id))},
+                    text: "Cmd Test",
+                  },
+                  [i({ class: "far fa-trash" })]
+                ),
+              ]),
             ]),
           ]);
         })
       ),
     ]);
   };
-
   return { init, update, view };
 };
 

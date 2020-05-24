@@ -8,4 +8,12 @@ const removeTodo = (index) => {
   return { type: "DEL", payload: index };
 };
 
-export { addTodo, clearAll, removeTodo };
+const sendCmd = (id) => {
+  return { type: "CMD", payload: {id}};
+}
+
+const titleToUpper = (id) => {
+  return { type: "TO_UPPER", payload: {id}};
+}
+
+export { addTodo, clearAll, removeTodo, sendCmd, titleToUpper };

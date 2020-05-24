@@ -116,10 +116,7 @@ const diffAttribs = (oNode, nNode, patches) => {
             oNode.elem.setAttribute(k, v);
           }
         } else {
-          oNode.elem.removeEventListener(
-            k.slice(2),
-            oNode.attrs[k]
-          );
+          oNode.elem.removeEventListener(k.slice(2), oNode.attrs[k]);
           oNode.elem.addEventListener(k.slice(2), v);
         }
         oNode.attrs[k] = v;
@@ -221,11 +218,16 @@ const View = (props = {}) => {
 
   const dispatch = (msg) => {
     const nState = update(msg, oState);
-    let cmd = nState[1];
-    if (cmd) {
-      cmd(dispatch);
+    let command = nState[1];
+    if (command) {
+      if (command[1]) {
+        command[0](command[1], dispatch);
+      } else {
+        command[0](dispatch);
+      }
+    } else {
+      applyState(nState[0]);
     }
-    applyState(nState[0]);
   };
 
   const mount = ($node) => {
