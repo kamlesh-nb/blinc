@@ -1,6 +1,6 @@
 {
   "name": "blinc",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "a nano web ramework",
   "main": "index.js",
   "scripts": {
