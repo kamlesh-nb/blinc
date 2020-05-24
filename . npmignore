@@ -1,6 +1,8 @@
 .DS_Store
-.cache/
 node_modules/
-dist/
+src/
+.babelrc
+.editorConfig
+.gitignore
 package-lock.json
 webpack.config.js
