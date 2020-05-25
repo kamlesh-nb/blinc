@@ -49,7 +49,7 @@ const Router = (config = {}) => {
   };
 
   const navigate = (e) => {
-    var path = e.target.attributes["path"].value  
+    var path = e.target.attributes["path"].value;
     if (activeClass !== null) {
       links.forEach((key) => {
         key.element.classList.remove(activeClass);
@@ -60,16 +60,16 @@ const Router = (config = {}) => {
   };
 
   const init = () => {
-   if(mode === 'history'){
-    document.querySelectorAll("[path]").forEach((link) => {
-      link.addEventListener("click", navigate, false);
-      links.push({
-        path: link.attributes["path"],
-        isActive: false,
-        element: link,
+    if (mode === "history") {
+      document.querySelectorAll("[path]").forEach((link) => {
+        link.addEventListener("click", navigate, false);
+        links.push({
+          path: link.attributes["path"],
+          isActive: false,
+          element: link,
+        });
       });
-    });
-   }
+    }
   };
 
   const onRouteChange = (func) => {
@@ -168,7 +168,7 @@ const diff = (parent, index, vOldNode, vNewNode, patches) => {
       patches["nodes"].push(() => {
         let $text = renderElement(vNewNode);
         parent.elem.childNodes[index].replaceWith($text);
-        parent.children[index] = vNewNode
+        parent.children[index] = vNewNode;
       });
     }
     return;
@@ -206,7 +206,7 @@ const View = (props = {}) => {
   var update = props.update;
   var view = props.view;
   var oState = props.init ? props.init[0] : null;
-  var effect = props.init
+  var command = props.init
     ? props.init.length > 1
       ? props.init[1]
       : null
@@ -233,15 +233,20 @@ const View = (props = {}) => {
   };
 
   const mount = ($node) => {
-    if (effect) {
-      effect(dispatch);
-    }
-    vOldDom = oState ? view(oState, dispatch) : view();
-    $viewNode = renderElement(vOldDom);
-    if ($node.childNodes.length > 0) {
-      $node.replaceChild($viewNode, $node.childNodes[0]);
+    if (command) {
+      if (command[1]) {
+        command[0](command[1], dispatch);
+      } else {
+        command[0](dispatch);
+      }
     } else {
-      $node.appendChild($viewNode);
+      vOldDom = oState ? view(oState, dispatch) : view();
+      $viewNode = renderElement(vOldDom);
+      if ($node.childNodes.length > 0) {
+        $node.replaceChild($viewNode, $node.childNodes[0]);
+      } else {
+        $node.appendChild($viewNode);
+      }
     }
   };
 
