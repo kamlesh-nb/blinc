@@ -23,7 +23,7 @@ var initialState = {
 };
 
 const Todo = (props) => {
-  let init = [initialState];
+  let init = [initialState, [testCmd, {id: 1}]];
   const update = (msg, state) => {
     switch (msg.type) {
       case "ADD":

@@ -233,21 +233,22 @@ const View = (props = {}) => {
   };
 
   const mount = ($node) => {
+    
+    vOldDom = oState ? view(oState, dispatch) : view();
+    $viewNode = renderElement(vOldDom);
+    if ($node.childNodes.length > 0) {
+      $node.replaceChild($viewNode, $node.childNodes[0]);
+    } else {
+      $node.appendChild($viewNode);
+    }
     if (command) {
       if (command[1]) {
         command[0](command[1], dispatch);
       } else {
         command[0](dispatch);
       }
-    } else {
-      vOldDom = oState ? view(oState, dispatch) : view();
-      $viewNode = renderElement(vOldDom);
-      if ($node.childNodes.length > 0) {
-        $node.replaceChild($viewNode, $node.childNodes[0]);
-      } else {
-        $node.appendChild($viewNode);
-      }
     }
+    
   };
 
   return { mount };

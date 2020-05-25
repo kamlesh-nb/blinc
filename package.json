@@ -4,8 +4,8 @@
   "description": "a nano web ramework",
   "main": "index.js",
   "scripts": {
-    "build": "npx babel src --out-dir dist",
-    "start": "npx babel src --watch --out-dir dist"
+    "build": "npx cross-env BABEL_ENV=productionn babel src --out-dir dist",
+    "start": "npx cross-env BABEL_ENV=production babel src --watch --out-dir dist"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
