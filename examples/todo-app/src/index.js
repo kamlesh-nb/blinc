@@ -10,14 +10,14 @@ import {
   span,
   label,
   i,
-  setFieldValues,
+  formFields,
 } from "../../../dist/tags";
 
 import { addTodo, clearAll, removeTodo, sendCmd } from './messages'
 import { testCmd } from './effects/commands'
 
 var initialState = {
-  editText: "",
+  title: "Check you blood sugar",
   uid: 0,
   todos: [],
 };
@@ -29,10 +29,11 @@ const Todo = (props) => {
       case "ADD":
         return [
           Object.assign({}, state, {
+            title: msg.payload,
             uid: state.uid + 1,
             todos: state.todos.concat({
               id: state.uid + 1,
-              ...msg.payload,
+              title: msg.payload,
             }),
           }),
         ];
@@ -59,17 +60,17 @@ const Todo = (props) => {
     }
   };
   const view = (state, dispatch) => {
-    let { fields, setValue } = setFieldValues();
+    let { fields, setValue } =   formFields({...state});
 
     return div({ class: "container" }, [
       h2({ text: "Blinc To Do" }),
       state.todos.length == 0
-        ? label({text: `There's nothing you can do at the moment...`})
+        ? `There's nothing you can do at the moment...`
         : span({text: `Total Todos: ${state.todos.length}`}),
-      hr(),
+      hr(), 
       div({ class: "row" }, [
         div({ class: "col-md-10" }, [
-          input({ id: "title", class: "form-control", onchange: setValue }),
+          input({ id: "title", class: "form-control", value: fields.title,  onchange: setValue }),
         ]),
         div({ class: "col-md-1" }, [
           button({
@@ -77,7 +78,7 @@ const Todo = (props) => {
             class: "btn btn-primary",
             text: "Add",
             onclick: (e) => {
-              dispatch(addTodo(fields));
+              dispatch(addTodo(fields.title));
             },
           }),
         ]),

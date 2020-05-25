@@ -11,7 +11,7 @@ const Router = (config = {}) => {
     };
   } else {
     window.onhashchange = (event) => {
-      routeTo();
+      routeTo(event.target.location.hash.slice(1));
     };
   }
 
@@ -44,13 +44,12 @@ const Router = (config = {}) => {
     const route = routes.filter((route) => match(route, path))[0];
     if (mode === "history") {
       window.history.pushState({ path: path }, "name", route.path);
-    } else {
     }
     listener(route);
   };
 
   const navigate = (e) => {
-    var path = e.target.attributes["path"].value;
+    var path = e.target.attributes["path"].value  
     if (activeClass !== null) {
       links.forEach((key) => {
         key.element.classList.remove(activeClass);
@@ -61,6 +60,7 @@ const Router = (config = {}) => {
   };
 
   const init = () => {
+   if(mode === 'history'){
     document.querySelectorAll("[path]").forEach((link) => {
       link.addEventListener("click", navigate, false);
       links.push({
@@ -69,6 +69,7 @@ const Router = (config = {}) => {
         element: link,
       });
     });
+   }
   };
 
   const onRouteChange = (func) => {
@@ -167,6 +168,7 @@ const diff = (parent, index, vOldNode, vNewNode, patches) => {
       patches["nodes"].push(() => {
         let $text = renderElement(vNewNode);
         parent.elem.childNodes[index].replaceWith($text);
+        parent.children[index] = vNewNode
       });
     }
     return;

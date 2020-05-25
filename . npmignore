@@ -6,4 +6,3 @@ examples/
 .editorConfig
 .gitignore
 package-lock.json
-webpack.config.js

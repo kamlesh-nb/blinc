@@ -7,8 +7,9 @@ tags.split(',').forEach((tag) => {
   };
 });
 
-export function setFieldValues(props = {}) {
-  let fields = props
+export function formFields(props = {}) {
+  let fields = {}
+  Object.assign(fields, props)
   const setValue = (event) => {
     fields[event.target.id] = event.target.value
   }
