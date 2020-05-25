@@ -248,7 +248,7 @@ const View = (props = {}) => {
         command[0](dispatch);
       }
     }
-    
+
   };
 
   return { mount };
@@ -274,7 +274,10 @@ const App = (props = {}) => {
     document.body.appendChild($main);
     router.init();
     router.onRouteChange((route) => {
-      View(route.view()).mount($main);
+      View(route.view({
+        params: route.params || null,
+        history: { push: router.routeTo }
+      })).mount($main);
     });
   };
 
