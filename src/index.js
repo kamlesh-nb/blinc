@@ -1,8 +1,8 @@
 const Router = (config = {}) => {
-  let routes = config.routes;
-  let mode = config.mode || null;
-  let activeClass = config.activeClass || null;
-  let links = [];
+  const routes = config.routes;
+  const mode = config.mode || null;
+  const activeClass = config.activeClass || null;
+  const links = [];
   let listener;
 
   if (mode === "history") {
@@ -16,8 +16,8 @@ const Router = (config = {}) => {
   }
 
   const match = (route, requestPath) => {
-    let paramNames = [];
-    let regexPath =
+    const paramNames = [];
+    const regexPath =
       route.path.replace(/([:*])(\w+)/g, (full, colon, name) => {
         console.log(`full: ${full}, color: ${colon}`);
         paramNames.push(name);
@@ -26,7 +26,7 @@ const Router = (config = {}) => {
 
     let params = {};
 
-    let routeMatch = requestPath.match(new RegExp(regexPath));
+    const routeMatch = requestPath.match(new RegExp(regexPath));
     if (routeMatch !== null) {
       params = routeMatch
         .slice(1, routeMatch.length)
@@ -66,7 +66,7 @@ const Router = (config = {}) => {
         links.push({
           path: link.attributes["path"],
           isActive: false,
-          element: link,
+          element: link
         });
       });
     }
@@ -85,7 +85,7 @@ const renderElement = (vNode) => {
   }
 
   const $el = document.createElement(vNode.tag);
-  vNode["elem"] = $el;
+  vNode.elem = $el;
 
   for (const [k, v] of Object.entries(vNode.attrs)) {
     if (typeof v === "function") {
@@ -108,8 +108,8 @@ const renderElement = (vNode) => {
 
 const diffAttribs = (oNode, nNode, patches) => {
   for (const [k, v] of Object.entries(nNode.attrs)) {
-    if (oNode.attrs[k] == undefined || oNode.attrs[k] !== v) {
-      patches["attribs"].push(() => {
+    if (oNode.attrs[k] === undefined || oNode.attrs[k] !== v) {
+      patches.attribs.push(() => {
         if (typeof v !== "function") {
           if (k === "text") {
             oNode.elem.textContent = v;
@@ -127,7 +127,7 @@ const diffAttribs = (oNode, nNode, patches) => {
 
   for (const k in oNode.attrs) {
     if (!(k in nNode.attrs)) {
-      patches["attribs"].push(() => {
+      patches.attribs.push(() => {
         oNode.elem.removeAttribute(k);
         delete oNode.attrs[k];
       });
@@ -136,22 +136,22 @@ const diffAttribs = (oNode, nNode, patches) => {
 };
 
 const diffKids = (oNode, nNode, patches) => {
-  let xLen = Object.keys(oNode.children).length;
-  let yLen = Object.keys(nNode.children).length;
+  const xLen = Object.keys(oNode.children).length;
+  const yLen = Object.keys(nNode.children).length;
 
-  let len = xLen > yLen ? xLen : yLen;
+  const len = xLen > yLen ? xLen : yLen;
 
   for (let i = 0; i < len; i++) {
     if (oNode.children[i] === undefined) {
-      patches["kids"].push(() => {
-        let $el = renderElement(nNode.children[i]);
-        nNode.children[i]["elem"] = $el;
+      patches.kids.push(() => {
+        const $el = renderElement(nNode.children[i]);
+        nNode.children[i].elem = $el;
         oNode.children[i] = {};
         Object.assign(oNode.children[i], nNode.children[i]);
         oNode.elem.appendChild($el);
       });
     } else if (nNode.children[i] === undefined) {
-      patches["kids"].push(() => {
+      patches.kids.push(() => {
         oNode.elem.removeChild(oNode.children[i].elem);
         delete oNode.children[i];
       });
@@ -165,16 +165,16 @@ const diff = (parent, index, vOldNode, vNewNode, patches) => {
   if (vOldNode !== null && vNewNode === undefined) {
   } else if (typeof vOldNode === "string" || typeof vNewNode === "string") {
     if (vOldNode !== vNewNode) {
-      patches["nodes"].push(() => {
-        let $text = renderElement(vNewNode);
-        parent.elem.childNodes[index].replaceWith($text);
+      patches.nodes.push(() => {
+        const $node = renderElement(vNewNode);
+        parent.elem.childNodes[index].replaceWith($node);
         parent.children[index] = vNewNode;
       });
     }
     return;
   } else if (vOldNode.tag !== vNewNode.tag) {
-    patches["nodes"].push(() => {
-      let $parent = vOldNode.elem.parentNode;
+    patches.nodes.push(() => {
+      const $parent = vOldNode.elem.parentNode;
       const $newNode = renderElement(vNewNode);
       $parent.replaceChild($newNode, vOldNode.elem);
       Object.assign(vOldNode, vNewNode);
@@ -187,15 +187,15 @@ const diff = (parent, index, vOldNode, vNewNode, patches) => {
 };
 
 const diffAndPatch = (vOldNode, vNewNode) => {
-  let patches = { nodes: [], kids: [], attribs: [] };
+  const patches = { nodes: [], kids: [], attribs: [] };
   diff({}, 0, vOldNode, vNewNode, patches);
-  patches["nodes"].forEach((patch) => {
+  patches.nodes.forEach((patch) => {
     patch();
   });
-  patches["attribs"].forEach((patch) => {
+  patches.attribs.forEach((patch) => {
     patch();
   });
-  patches["kids"].forEach((patch) => {
+  patches.kids.forEach((patch) => {
     patch();
   });
 };
@@ -220,19 +220,18 @@ const View = (props = {}) => {
 
   const dispatch = (msg) => {
     const nState = update(msg, oState);
-    let command = nState[1];
+    const command = nState[1];
     if (command) {
       if (command[1]) {
         command[0](command[1], dispatch);
       } else {
         command[0](dispatch);
       }
-    } 
+    }
     applyState(nState[0]);
   };
 
   const mount = ($node) => {
-    
     vOldDom = oState ? view(oState, dispatch) : view();
     $viewNode = renderElement(vOldDom);
     if ($node.childNodes.length > 0) {
@@ -247,7 +246,6 @@ const View = (props = {}) => {
         command[0](dispatch);
       }
     }
-
   };
 
   return { mount };
@@ -255,21 +253,21 @@ const View = (props = {}) => {
 
 const App = (props = {}) => {
   let state = props.state || null;
-  let update = props.update || null;
-  let navbar = props.navbar || null;
-  let footer = props.footer || null;
-  let main = props.main || null;
+  const update = props.update || null;
+  const navbar = props.navbar || null;
+  const footer = props.footer || null;
+  const main = props.main || null;
 
   const router = Router(main);
 
   const _initHeader = () => {
-    let $header = document.createElement("header");
+    const $header = document.createElement("header");
     document.body.appendChild($header);
     View(navbar()).mount($header);
   };
 
   const _initMain = () => {
-    let $main = document.createElement("main");
+    const $main = document.createElement("main");
     document.body.appendChild($main);
     router.init();
     router.onRouteChange((route) => {
@@ -281,7 +279,7 @@ const App = (props = {}) => {
   };
 
   const _initFooter = () => {
-    let $footer = document.createElement("footer");
+    const $footer = document.createElement("footer");
     document.body.appendChild($footer);
     View(footer()).mount($footer);
   };
