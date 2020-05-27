@@ -1,4 +1,5 @@
-import { View } from "../../../dist/";
+//import { View } from 'blinc/lib'
+import { View } from "../../../lib/";
 import {
   div,
   input,
@@ -11,7 +12,11 @@ import {
   label,
   i,
   formFields,
-} from "../../../dist/tags";
+} from "../../../lib/tags";
+
+//from 'blinc/lib/tags'
+
+//from "../../../dist/tags";
 
 import { addTodo, clearAll, removeTodo, sendCmd } from './messages'
 import { testCmd } from './effects/commands'
@@ -20,7 +25,9 @@ var initialState = {
   title: "Check you blood sugar",
   uid: 0,
   todos: [],
-};
+}; 
+
+
 
 const Todo = (props) => {
   let init = [initialState, [testCmd, {id: 1}]];
@@ -70,6 +77,7 @@ const Todo = (props) => {
       hr(), 
       div({ class: "row" }, [
         div({ class: "col-md-10" }, [
+          label({for: 'title', text: 'To Do Title'}),
           input({ id: "title", class: "form-control", value: fields.title,  onchange: setValue }),
         ]),
         div({ class: "col-md-1" }, [

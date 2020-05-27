@@ -227,9 +227,8 @@ const View = (props = {}) => {
       } else {
         command[0](dispatch);
       }
-    } else {
-      applyState(nState[0]);
-    }
+    } 
+    applyState(nState[0]);
   };
 
   const mount = ($node) => {

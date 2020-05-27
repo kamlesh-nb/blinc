@@ -1,11 +1,15 @@
 {
   "name": "blinc",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "a nano web ramework",
   "main": "index.js",
+  "files": [
+   "lib/index.js",
+   "lib/tags"
+  ],
   "scripts": {
-    "build": "npx cross-env BABEL_ENV=productionn babel src --out-dir dist",
-    "start": "npx cross-env BABEL_ENV=production babel src --watch --out-dir dist"
+    "build": "npx cross-env BABEL_ENV=productionn babel src --out-dir lib",
+    "start": "npx cross-env BABEL_ENV=production babel src --watch --out-dir lib"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -22,8 +26,8 @@
   },
   "keywords": [
     "blinc",
-    "vdom",
-    "spa"
+    "function ui",
+    "framework"
   ],
   "author": "kamlesh bambarde",
   "license": "MIT",
