@@ -8,7 +8,6 @@ const Navbar = (props) => {
     const view = (state, dispatch) => {
       return div({ id: "navigation" },[
         nav({},[
-           
             ul({ id: "list"},[
               li({},[a({ path: "/", text: 'Home'})]),
               li({},[a({ path: "/commands", text: 'Commands'})]),
