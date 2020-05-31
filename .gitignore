@@ -4,3 +4,4 @@ npm-shrinkwrap.json
 config.js
 .cache
 dist
+.DS_Store
