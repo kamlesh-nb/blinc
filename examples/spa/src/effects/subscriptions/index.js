@@ -2,8 +2,6 @@ import firebase from 'firebase'
 import db from '../../firebaseConfig'
 import {refreshUsers} from '../../messages'
 
- 
-
 const listenChangesToUsers = () => {
   let collection = db.collection("users")
   let detach;

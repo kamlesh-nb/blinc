@@ -24,6 +24,7 @@ let initialState = {
 };
 
 const Commands = (props) => {
+  
   let init = [initialState];
 
   const update = (msg, state) => {

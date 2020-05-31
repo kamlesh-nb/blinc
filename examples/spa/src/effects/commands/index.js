@@ -2,7 +2,6 @@ import axios from 'axios'
 import {showUsers} from '../../messages'
 import db from '../../firebaseConfig'
 
-
 const getUsers = (params, dispatch) => {
   axios.get(`https://reqres.in/api/users?page=${params.pageNo}`)
   .then(function (response) {

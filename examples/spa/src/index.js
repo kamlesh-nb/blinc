@@ -5,10 +5,7 @@ import Footer from './views/footer'
 import Home from './views/home'
 import Commands from './views/commands'
 import Subscriptions from './views/subscriptions'
-
-
-
-   
+ 
 var app = App({
   navbar: Navbar,
   main: {

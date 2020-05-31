@@ -3,7 +3,6 @@ import listenChangesToUsers from '../effects/subscriptions'
 import { addSub, removeSub, addUser } from '../messages'
 import { cmdAddUser } from '../effects/commands'
 
-
 let initialState = {
   isSubscribed: false,
   users: []
@@ -12,6 +11,7 @@ let initialState = {
 const {subscribe, unsubscribe} = listenChangesToUsers()
 
 const Subscriptions = (props) => {
+  
   let init = [initialState]
 
   const update = (msg, state) =>{
