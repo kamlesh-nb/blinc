@@ -1,15 +1,19 @@
 {
   "name": "spa",
   "version": "1.0.0",
-  "description": "",
+  "description": "spa example using blinc",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "parcel index.html"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "blinc": "^1.0.0"
+    "axios": "^0.19.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.2",
+    "parcel-bundler": "^1.12.4"
   }
 }

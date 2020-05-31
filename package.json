@@ -4,24 +4,27 @@
   "description": "a nano web ramework",
   "main": "index.js",
   "files": [
-    "lib/index.js",
-    "lib/tags"
+    "/lib/*/blinc.js",
+    "lib/*/blinc.min.js",
+    "lib/*/tags/tags.js",
+    "lib/*/tags/tags.min.js",
+    "lib/*/tags/index.js",
+    "index.js"
   ],
   "scripts": {
-    "build": "npx cross-env BABEL_ENV=productionn babel src --out-dir lib",
-    "start": "npx cross-env BABEL_ENV=production babel src --watch --out-dir lib"
+    "lint": "eslint .",
+    "blinc-min": "terser build/blinc.js -o build/blinc.min.js -c -m",
+    "tags-min": "terser build/tags/tags.js -o build/tags/tags.min.js -c -m",
+    "blinc-compile": "babel src/index.js  --out-file build/blinc.js",
+    "tags-compile": "babel src/tags/index.js  --out-file build/tags/tags.js",
+    "build": "npm run blinc-compile && npm run tags-compile && npm run blinc-min && npm run tags-min",
+    "start": "npx babel src/index.js --watch --out-file lib/blinc.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
-    "babel-preset-minify": "^0.5.1",
-    "eslint": "^7.1.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "terser": "^4.7.0"
   },
   "repository": {
     "type": "git",
@@ -37,5 +40,8 @@
   ],
   "author": "kamlesh bambarde",
   "license": "MIT",
-  "homepage": "https://github.com/kamlesh-nb"
+  "homepage": "https://github.com/kamlesh-nb",
+  "dependencies": {
+    "firebase": "^7.14.6"
+  }
 }

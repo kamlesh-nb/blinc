@@ -3,12 +3,12 @@ const tags = "a,abbr,address,area,article,aside,audio,b,base,bdi,bdo,big,blockqu
 tags.split(",").forEach((tag) => {
   exports[tag] = (attrs, children) => {
     const kids = children ? { ...children } : {};
-    let elem;
-    return { tag, elem, attrs: attrs || {}, children: kids || {} };
+    let elem, key;
+    return { tag, elem, key, attrs: attrs || {}, children: kids || {} };
   };
 });
 
-export function formFields (props = {}) {
+const formFields = (props = {}) => {
   const fields = {};
   Object.assign(fields, props);
   const setValue = (event) => {
@@ -16,3 +16,5 @@ export function formFields (props = {}) {
   };
   return { fields, setValue };
 };
+
+exports.formFields = formFields

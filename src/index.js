@@ -1,3 +1,6 @@
+const pipe = (...fns) => fns.reduce((f, g) => (...args) => g(f(...args)));
+const compose =  (...fns) => fns.reduce((f, g) => (...args) => f(g(...args)));
+
 const Router = (config = {}) => {
   const routes = config.routes;
   const mode = config.mode || null;
@@ -36,7 +39,14 @@ const Router = (config = {}) => {
           return params;
         }, null);
     }
-    route["params"] = params;
+    // route["params"] = params;
+    Object.defineProperty(route, "params", {
+      value: params,
+      writable: true,
+      enumerable: true,
+      configurable: true
+    });
+
     return routeMatch;
   };
 
@@ -49,7 +59,7 @@ const Router = (config = {}) => {
   };
 
   const navigate = (e) => {
-    var path = e.target.attributes["path"].value;
+    var path = e.target.attributes.getNamedItem("path").value;
     if (activeClass !== null) {
       links.forEach((key) => {
         key.element.classList.remove(activeClass);
@@ -64,7 +74,7 @@ const Router = (config = {}) => {
       document.querySelectorAll("[path]").forEach((link) => {
         link.addEventListener("click", navigate, false);
         links.push({
-          path: link.attributes["path"],
+          path: link.attributes.getNamedItem("path"),
           isActive: false,
           element: link
         });
@@ -100,6 +110,9 @@ const renderElement = (vNode) => {
   }
 
   for (const [k, kid] of Object.entries(vNode.children)) {
+    if (typeof kid !== "string") {
+      kid.key = k;
+    }
     var $child = renderElement(kid);
     $el.appendChild($child);
   }
@@ -201,12 +214,12 @@ const diffAndPatch = (vOldNode, vNewNode) => {
 };
 
 const View = (props = {}) => {
-  var vOldDom;
+  let vOldDom;
   let $viewNode;
-  var update = props.update;
-  var view = props.view;
-  var oState = props.init ? props.init[0] : null;
-  var command = props.init
+  const update = props.update;
+  const view = props.view;
+  let oState = props.init ? props.init[0] : null;
+  let command = props.init
     ? props.init.length > 1
       ? props.init[1]
       : null
@@ -252,8 +265,8 @@ const View = (props = {}) => {
 };
 
 const App = (props = {}) => {
-  let state = props.state || null;
-  const update = props.update || null;
+  // let state = props.state || null;
+  // const update = props.update || null;
   const navbar = props.navbar || null;
   const footer = props.footer || null;
   const main = props.main || null;
@@ -294,4 +307,4 @@ const App = (props = {}) => {
   return { run };
 };
 
-export { App, View };
+export { App, View, pipe, compose };

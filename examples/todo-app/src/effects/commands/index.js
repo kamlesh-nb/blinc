@@ -1,8 +1,8 @@
 import { titleToUpper } from '../../messages'
 
-const testCmd = (param, dispatch) => {
-    console.log(`cmd called with param: ${JSON.stringify(param)}`);
-    dispatch(titleToUpper(param.id))
+const testCmd = (props = {}) => {
+    console.log(`cmd called with param: ${JSON.stringify(props.param)}`);
+    props.dispatch(titleToUpper(props.param.id))
 }
 
 export { testCmd }

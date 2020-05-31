@@ -4,16 +4,14 @@
   "description": "",
   "private": true,
   "scripts": {
-    "dev": "parcel index.html"
+    "serve": "parcel index.html"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/core": "^7.9.6",
+    "@babel/core": "^7.10.2",
     "parcel-bundler": "^1.12.4"
   },
-  "dependencies": {
-    "blinc": "^0.1.0"
-  }
+  "dependencies": {}
 }

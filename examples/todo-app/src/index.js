@@ -1,33 +1,36 @@
-//import { View } from 'blinc/lib'
-import { View } from "../../../lib/";
-import {
-  div,
+import { View } from "../../../build";
+import {div,
   input,
   ul,
-  li,
+  li, 
   button,
   h2,
   hr,
   span,
   label,
   i,
-  formFields,
-} from "../../../lib/tags";
-
-//from 'blinc/lib/tags'
-
-//from "../../../dist/tags";
+  formFields} from '../../../build/tags'
 
 import { addTodo, clearAll, removeTodo, sendCmd } from './messages'
 import { testCmd } from './effects/commands'
+import { pipe } from "../../../build/blinc.min";
 
 var initialState = {
   title: "Check you blood sugar",
   uid: 0,
   todos: [],
 }; 
+const func1 = (param, dispatch) =>{
+  console.log('func1 in pipe got executed');
+  return { param, dispatch }
+}
 
+const func2 = (props={}) =>{
+  console.log('func2 in pipe got executed');
+  return props
+}
 
+const f = pipe(func1, func2, testCmd)
 
 const Todo = (props) => {
   let init = [initialState, [testCmd, {id: 1}]];
@@ -57,7 +60,7 @@ const Todo = (props) => {
           }),
         ];
       case 'CMD':
-        return [state, [testCmd, msg.payload]]
+        return [state, [f, msg.payload]]
       case 'TO_UPPER':
         return [
           Object.assign({}, state, { todos: state.todos.map(todo => (todo.id == msg.payload.id) ? {id: todo.id, title: todo.title.toUpperCase()} : todo)})
