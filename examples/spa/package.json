@@ -4,7 +4,7 @@
   "description": "spa example using blinc",
   "main": "index.js",
   "scripts": {
-    "serve": "parcel index.html"
+    "serve": "parcel build index.html"
   },
   "keywords": [],
   "author": "",

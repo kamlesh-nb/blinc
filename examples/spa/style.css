@@ -125,7 +125,10 @@ button--wide {
   padding-right: 1.5em;
   padding-left: 1.5em;
 }
-
+label {
+  display: inline-block;
+  margin-bottom: .5rem;
+}
 input {
   display: flex;
   padding: 0.25rem 0.25rem;
@@ -164,7 +167,7 @@ main {
 [class*="col-"] {
   padding-right: 10px;
   padding-left: 10px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   box-sizing: border-box;
 }
 
@@ -234,7 +237,7 @@ main {
   .col-10,
   .col-11,
   .col-12 {
-    flex: 0 0 100%;
+    flex: 1 1 100%;
     width: 100%;
   }
 }
@@ -243,7 +246,7 @@ main {
   padding: 0.5rem 0.5rem;
   background-color: #789;
   color: #fff;
-  font-size: 0.75em;
+  font-size: 1em;
   overflow-x: hidden;
   text-align: left;
 }
@@ -361,6 +364,14 @@ code {
 pre > code {
   font: inherit;
   color: inherit;
+}
+
+@media all and (min-width: 480px) {
+  .Login {
+    padding: 60px 0;
+    margin: 0 auto;
+    max-width: 320px;
+  }
 }
  
  

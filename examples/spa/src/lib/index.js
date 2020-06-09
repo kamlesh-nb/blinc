@@ -78,6 +78,8 @@ const Router = (config = {}) => {
     if (mode === "history") {
       window.history.replaceState({}, null, "");
       document.querySelectorAll("[path]").forEach((link) => {
+        // link.addEventListener("click", navigate, false);
+        // console.log(link.id);
         links.push({
           path: link.attributes.getNamedItem("path"),
           isActive: false,
