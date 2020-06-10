@@ -1,8 +1,8 @@
 # Blinc
 
-A Nano Framework for building Functional Web UI Applications based on ELM Architecture. It uses pure functions to define web interfaces, and handles the side effects via commands and subscriptions, all that you can write in pure JavaScript.
+A Nano Framework for building Functional Web UI Applications based on ELM Architecture. It uses pure functions to define web interfaces, and handles the side effects via commands and subscriptions, all that you can write in native JavaScript.
 
-> It uses virtual dom to facilitate, re-rendering of the view when the state changes, thus complies to the principle; view = f(state)
+It uses virtual dom to facilitate the re-rendering of the view as a result of the state changes. 
 
 # Getting Started
 
@@ -47,7 +47,7 @@ const Hello = (props) => {
       button({
         id: "btn",
         onclick: (e) => {
-          dispatch({ type: "GREET", payload: fields });
+          dispatch({ type: "GREET", payload: fields.name });
         },
       }),
     ]);
@@ -59,6 +59,7 @@ const Hello = (props) => {
 let view = View(Hello());
 let $node = document.body;
 view.mount($node);
+
 ```
 
 Above example explains how a basic web interface can be developed using blinc, but there's much more that is needed to build actual application. It is nearly impossible to build and useful application with pure functions as every application has to interact with the outside world (resource outside of the application) like databases, web sockets, web api's etc.
@@ -117,7 +118,7 @@ import {
   formFields,
 } from "blinc/tags";
 
-import getUsers from ".command";
+import getUsers from "./command";
 
 let initialState = {
   page: 1,
@@ -195,23 +196,21 @@ let $node = document.body;
 view.mount($node);
 ```
 
-Following is the implementation of the Subscription...
+Following is the implementation of the Subscription. This example uses a table in firebase FiresStore database, which has following simple structure; 
 
 ```javascript
+{
+  username: '',
+  firstname: '',
+  lastname: '',
+  email: ''
+}
+```
+
+In below example, we have ignored the firebase app initialization code, you can refer firebase documentation for the same.
+
+```javascript 
 //subscription.js
-
-/**
- * This example uses a table in firebase FiresStore database, which has following simple   structure;
- * {
- *  username: '',
- *  firstname: '',
- *  lastname: '',
- *  email: ''
- * }
- *
- * in below example, we have ignore the firebase app initialization code, you can refer firebase documentation for the same
- */
-
 const UsersStateChange = () => {
   let collection = db.collection("users");
   let detach;
@@ -241,7 +240,7 @@ Now lets see how we can use the above Subscription in view.
 //subscriptionDemo.js
 
 import { div, input, hr, button, formFields } from "blinc/tags";
-import UsersStateChange from "./subscriptions";
+import UsersStateChange from "./subscription";
 
 let initialState = {
   isSubscribed: false,
@@ -315,6 +314,8 @@ let $node = document.body;
 view.mount($node);
 ```
 
-It is still a work in progress, you can still try it and let us know if you face any difficulty by raising an issue here.
+This is still a work in progress, you can still try it and let us know if you face any difficulty by raising an issue here.
 
 # License
+
+## MIT
