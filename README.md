@@ -14,7 +14,7 @@ Blinc Web Interfaces, are easy to build using pure function composition, without
 
 Following is a code for the simple Hello Application. Module bundlers like parcel and webpack can be used ti bundle the application, you can refer the examples in the repository for the same.
 
-```code
+```javascript
 //index.js
 
 import {View} from 'blinc'
@@ -66,7 +66,7 @@ Since binc is based on ELM Architecture, we picked the concept of Commands and S
   - Send Http Request
   - Read/Write from/to localStorage
 
-### Subscripts
+### Subscriptions
   - Suscribing and Listening to WebSockets for messages
   - Subscribing to Real-Time Databases like firestore 
 
