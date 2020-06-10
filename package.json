@@ -3,14 +3,6 @@
   "version": "0.1.0",
   "description": "a nano web ramework",
   "main": "index.js",
-  "files": [
-    "/lib/*/blinc.js",
-    "lib/*/blinc.min.js",
-    "lib/*/tags/tags.js",
-    "lib/*/tags/tags.min.js",
-    "lib/*/tags/index.js",
-    "index.js"
-  ],
   "scripts": {
     "lint": "eslint .",
     "blinc-min": "terser build/blinc.js -o build/blinc.min.js -c -m",
@@ -36,12 +28,10 @@
   "keywords": [
     "blinc",
     "function ui",
-    "framework"
+    "framework",
+    "virtual-dom"
   ],
   "author": "kamlesh bambarde",
   "license": "MIT",
-  "homepage": "https://github.com/kamlesh-nb",
-  "dependencies": {
-    "firebase": "^7.14.6"
-  }
+  "homepage": "https://github.com/kamlesh-nb" 
 }
