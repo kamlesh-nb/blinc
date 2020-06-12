@@ -20,10 +20,18 @@ Following is a code for the simple Hello Application. Module bundlers like parce
 //index.js
 
 import { View } from "blinc";
-import { div, input, button, formFields } from "blinc/tags";
+import {
+  div,
+  form,
+  label,
+  input,
+  button,
+  br,
+  formFields,
+} from "blinc/tags";
 
 let state = {
-  greeting: "",
+  name: "",
 };
 const Hello = (props) => {
   let init = [state];
@@ -32,7 +40,7 @@ const Hello = (props) => {
   const update = (msg, state) => {
     switch (msg.type) {
       case "GREET":
-        return [Object.assign({}, state, { greeting: `Hello ${msg.payload}` })];
+        return [Object.assign({}, state, { name: `Hello ${msg.payload}` })];
       default:
         return [state];
     }
@@ -40,16 +48,28 @@ const Hello = (props) => {
 
   //pure function
   const view = (state, dispatch) => {
-    const { fields, setValue } = formFields();
+    const { fields, setValue } = formFields(state);
     return div({ id: "greet" }, [
-      state.greeting,
-      input({ id: "name", onchange: setValue }),
-      button({
-        id: "btn",
-        onclick: (e) => {
-          dispatch({ type: "GREET", payload: fields.name });
-        },
-      }),
+      state.name,
+      br({}),
+      form({}, [
+        label({ text: "Name", for: "name" }),
+        br({}),
+        input({
+          id: "name",
+          value: fields.name,
+          placeholder: "Enter your name here...",
+          onchange: setValue,
+        }),
+        button({
+          id: "btn",
+          text: "Greet",
+          onclick: (e) => {
+            e.preventDefault();
+            dispatch({ type: "GREET", payload: fields.name });
+          },
+        }),
+      ]),
     ]);
   };
 
@@ -59,6 +79,7 @@ const Hello = (props) => {
 let view = View(Hello());
 let $node = document.body;
 view.mount($node);
+
 
 ```
 
@@ -90,7 +111,7 @@ const getUsers = (params, dispatch) => {
   axios
     .get(`https://reqres.in/api/users?page=${params.pageNo}`)
     .then(function (response) {
-      dispatch({ type: "SHOW_USERS", payload: data });
+      dispatch({ type: "SHOW_USERS", payload: response });
     })
     .catch(function (error) {
       console.log(error);
@@ -121,10 +142,10 @@ import {
 import getUsers from "./command";
 
 let initialState = {
-  page: 1,
-  per_page: 6,
-  total: 12,
-  total_pages: 2,
+  page: 0,
+  per_page: 0,
+  total: 0,
+  total_pages: 0,
   data: {
     data: [],
   },
@@ -247,7 +268,7 @@ let initialState = {
   users: [],
 };
 
-const { subscribe, unsubscribe } = listenChangesToUsers();
+const { subscribe, unsubscribe } = UsersStateChange();
 
 const SubscriptionDemo = (props) => {
   let init = [initialState];
@@ -316,6 +337,3 @@ view.mount($node);
 
 This is still a work in progress, you can still try it and let us know if you face any difficulty by raising an issue here.
 
-# License
-
-## MIT
