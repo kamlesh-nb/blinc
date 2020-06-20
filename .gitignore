@@ -1,6 +1,6 @@
 node_modules
 build
-npm-shrinkwrap.json
+lib
 config.js
 .cache
 dist

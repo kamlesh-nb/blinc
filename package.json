@@ -1,37 +1,21 @@
 {
   "name": "blinc",
   "version": "0.1.0",
-  "description": "a nano web ramework",
+  "description": "a nano framework for developing functional web ui",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint .",
-    "blinc-min": "terser build/blinc.js -o build/blinc.min.js -c -m",
-    "tags-min": "terser build/tags/tags.js -o build/tags/tags.min.js -c -m",
-    "blinc-compile": "babel src/index.js  --out-file build/blinc.js",
-    "tags-compile": "babel src/tags/index.js  --out-file build/tags/tags.js",
-    "build": "npm run blinc-compile && npm run tags-compile && npm run blinc-min && npm run tags-min",
-    "start": "npx babel src/index.js --watch --out-file lib/blinc.js"
+    "build": "webpack"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.6",
     "@babel/preset-env": "^7.9.6",
-    "terser": "^4.7.0"
+    "compression-webpack-plugin": "^4.0.0",
+    "terser": "^4.8.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kamlesh-nb/blinc.git"
-  },
-  "bugs": {
-    "url": "https://github.com/kamlesh-nb/blinc.git/issues"
-  },
-  "keywords": [
-    "blinc",
-    "function ui",
-    "framework",
-    "virtual-dom"
-  ],
   "author": "kamlesh bambarde",
   "license": "MIT",
-  "homepage": "https://github.com/kamlesh-nb" 
+  "dependencies": {}
 }
