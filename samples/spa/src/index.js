@@ -1,4 +1,22 @@
+import { App, ChangeView, AppStateChanged } from '../../../build/blinc'
+import {Routes, onRouteChange} from '../../../build/router'
+import { addRules, getRules } from '../../../build/css'
+import Navbar from './views/navbar'
+import Home from './views/home'
+import Contact from './views/contact'
+import About from './views/about'
+import Footer from './views/footer'
+import SignIn from './views/signin'
+import '../style.css'
 
+
+let style = {
+  svg: {
+    color: 'red'
+  }
+}
+
+addRules(style)
 
 let initialState = {
   isUserLoggedIn: false,
@@ -11,7 +29,7 @@ const MyApp = () => {
       case "ROUTE_CHANGED":
         return [
           state,
-          [[ChangeView, Object.assign({}, { appState: state }, msg.payload)]],
+          [[ChangeView, Object.assign({}, { state: state }, msg.payload)]],
         ];
       case "LOGGED_IN":
         return [
@@ -34,7 +52,7 @@ const MyApp = () => {
       head: {
         meta: [{ name: "description", content: "Blinc" }],
         title: "Blinc SPA Sample",
-        // cssRules: css.getRules()
+        cssRules: getRules()
       },
       body: {
         header: Navbar,

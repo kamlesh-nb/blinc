@@ -1,3 +1,4 @@
+import { div } from '../../../../build/tags'
 const Home = (props) => {
   let init = [0];
 

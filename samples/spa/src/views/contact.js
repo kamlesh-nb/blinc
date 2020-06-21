@@ -1,3 +1,5 @@
+import { div, br } from '../../../../build/tags'
+
 const Contact = (props) => {
   let init = [0];
   const update = (msg, state) => {};

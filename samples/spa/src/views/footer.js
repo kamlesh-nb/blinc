@@ -1,3 +1,5 @@
+import { div } from '../../../../build/tags'
+
 const Footer = () => {
   let init = [0];
   const update = (msg, state) => {};

@@ -1,3 +1,5 @@
+import { div, form, span, label, input, button, svg, path } from '../../../../build/tags'
+
 const SignIn = (props) => {
   let init = [0];
   const update = (msg, state) => {
@@ -33,7 +35,7 @@ const SignIn = (props) => {
                         e.preventDefault();
                         props.dispatch({
                           type: "LOGGED_IN",
-                          payload: { isLoggedIn: true },
+                          payload: { isUserLoggedIn: true },
                         });
                       },
                     },
@@ -52,7 +54,7 @@ const SignIn = (props) => {
                       e.preventDefault();
                       props.dispatch({
                         type: "LOGGED_OUT",
-                        payload: { isLoggedIn: false },
+                        payload: { isUserLoggedIn: false },
                       });
                     },
                   }),

@@ -1,3 +1,23 @@
+import { div, nav, ul, li, a, svg, path } from '../../../../build/tags'
+import { WatchAppState } from '../../../../build/blinc'
+import { push } from '../../../../build/router'
+
+let activeLink
+
+const Link = (props = {}) => {  
+  return a({ 
+   ...props,
+    onclick: (e) => {
+      if(activeLink)
+        activeLink.classList.remove('active')
+      activeLink = e.target;
+      activeLink.classList.add('active')
+      e.preventDefault();
+      push(e.target.pathname)
+    },
+  });
+};
+
 const Navbar = (props) => {
   let init = [Object.assign({}, props.state), [[WatchAppState]]];
   const update = (msg, state) => {
@@ -16,7 +36,7 @@ const Navbar = (props) => {
           li({}, [Link({ text: "Home", href: "/" })]),
           li({}, [Link({ text: "Contact", href: "/contact/90" })]),
           li({}, [Link({ text: "About", href: "/about" })]),
-          state.isLoggedIn
+          state.isUserLoggedIn
             ? li({}, [Link({ text: "Sign Out" })])
             : li({}, [Link({ text: "Sign In", href: "/signin" })]),
         ]),
