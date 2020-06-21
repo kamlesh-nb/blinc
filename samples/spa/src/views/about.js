@@ -1,4 +1,4 @@
-import { div } from '../../../../build/tags'
+import { div } from 'blinc/tags'
 
 const About = () => {
   let init = [0];

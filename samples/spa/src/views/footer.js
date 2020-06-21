@@ -1,4 +1,4 @@
-import { div } from '../../../../build/tags'
+import { div } from 'blinc/tags'
 
 const Footer = () => {
   let init = [0];

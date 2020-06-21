@@ -1,4 +1,4 @@
-import { div, br } from '../../../../build/tags'
+import { div, br } from 'blinc/tags'
 
 const Contact = (props) => {
   let init = [0];

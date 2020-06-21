@@ -1,4 +1,4 @@
-import { div } from '../../../../build/tags'
+import { div } from 'blinc/tags'
 const Home = (props) => {
   let init = [0];
 

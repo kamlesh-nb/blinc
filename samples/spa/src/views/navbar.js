@@ -1,6 +1,6 @@
-import { div, nav, ul, li, a, svg, path } from '../../../../build/tags'
-import { WatchAppState } from '../../../../build/blinc'
-import { push } from '../../../../build/router'
+import { div, nav, ul, li, a, svg, path } from 'blinc/tags'
+import { WatchAppState } from 'blinc'
+import { push } from 'blinc/router'
 
 let activeLink
 
