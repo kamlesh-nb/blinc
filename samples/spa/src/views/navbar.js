@@ -1,5 +1,5 @@
 const Navbar = (props) => {
-  let init = [Object.assign({}, props.appState), [[WatchAppState]]];
+  let init = [Object.assign({}, props.state), [[WatchAppState]]];
   const update = (msg, state) => {
     switch (msg.type) {
       case "APP_STATE_CHANGED":
