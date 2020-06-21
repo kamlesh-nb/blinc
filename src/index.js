@@ -2,7 +2,6 @@ const renderElement = (vNode) => {
   if (typeof vNode === "string") {
     return document.createTextNode(vNode);
   }
-
   const $el = vNode.isSvg 
       ? document.createElementNS('http://www.w3.org/2000/svg', vNode.tag) 
       : document.createElement(vNode.tag);
@@ -22,8 +21,11 @@ const renderElement = (vNode) => {
   }
 
   for (const [k, kid] of Object.entries(vNode.children)) {
+    if(typeof kid === "number")
+      throw new Error('Number cannot be used in the document, use String() instead...')
+  
     if (typeof kid !== "string") {
-      kid.key = k;
+     kid.key = k;
     }
     var $child = renderElement(kid);
     $el.appendChild($child);
@@ -228,6 +230,7 @@ const App = (props = {}) => {
   let update = props.update || null;
   let view = props.view || null;
   let globals;
+
   const dispatch = (msg) => {
     const nState = update(msg, oState);
     const commands = nState[1];
@@ -235,6 +238,7 @@ const App = (props = {}) => {
       runEffects(commands, dispatch);
     }
   };
+
   const run = () => {
     let doc = oState ? view(oState, dispatch) : view();
     if(doc.head){ 
@@ -265,7 +269,7 @@ const App = (props = {}) => {
         globals = { state: oState, dispacth: dispatch };
         View(doc.body.header(globals)).mount($header);
       } else {
-        throw Error('header is mandatory in body of App');
+        throw new Error('header is mandatory in body of App');
       }
       if (doc.body.main) {
         $main = document.createElement("main");
@@ -275,7 +279,7 @@ const App = (props = {}) => {
         currentView = View(route.view(globals));
         currentView.mount($main);
       } else {
-        throw Error('main is mandatory in body of App');
+        throw new Error('main is mandatory in body of App');
       }
       if (doc.body.footer) {
         $footer = document.createElement("footer");
@@ -284,7 +288,7 @@ const App = (props = {}) => {
         View(doc.body.footer(globals)).mount($footer);
       }
     } else {
-      throw Error('body is mandatory in App');
+      throw new Error('body is mandatory in App');
     }
     if (onAppStart) {
       runEffects(onAppStart, dispatch);
