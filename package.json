@@ -1,6 +1,6 @@
 {
   "name": "blinc",
-  "version": "0.1.1",
+  "version": "0.0.1",
   "description": "Framework for Developing Functional Web UI",
   "main": "index.js",
   "scripts": {
@@ -30,7 +30,7 @@
   "author": "kamlesh bambarde",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kamlesh-nb/blinc.git"
+    "url": "git://github.com/kamlesh-nb/blinc.git"
   },
   "bugs": {
     "url": "https://github.com/kamlesh-nb/blinc.git/issues"

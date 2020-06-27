@@ -332,7 +332,7 @@ exports.Router = (state, dispatch, props = {}) => {
   const mount = ($node, path) => {
     const route = routes.filter((route) => match(route, path))[0];
     let props = { state, dispatch, params: route.params}
-    this.View(route.view(props)).mount($node)
+    this.Element(route.element(props)).mount($node)
   };
 
   document.addEventListener('readystatechange', event => {

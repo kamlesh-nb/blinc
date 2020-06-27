@@ -8,6 +8,5 @@ const path = require('path');
       filename: 'index.js',
       library: 'blinc',
       libraryTarget: 'commonjs2',
-    },
-
+    }
   }
