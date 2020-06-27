@@ -1,10 +1,13 @@
 {
   "name": "blinc",
   "version": "0.1.1",
-  "description": "framework for developing functional web ui",
+  "description": "Framework for Developing Functional Web UI",
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode=production"
+  },
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com/"
   },
   "devDependencies": {
     "path": "^0.12.7",
@@ -12,8 +15,8 @@
     "webpack-cli": "^3.3.12"
   },
   "files": [
-    "dist/index.js",
-    "dist/index.js.map",
+    "index.js",
+    "index.js.map",
     "README.md"
   ],
   "keywords": [

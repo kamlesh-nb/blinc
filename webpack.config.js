@@ -4,7 +4,7 @@ const path = require('path');
     entry: './src/index.js',
     devtool: 'source-map',
     output: {
-      path: path.resolve(__dirname, 'dist'),
+      path: path.resolve(__dirname, './'),
       filename: 'index.js',
       library: 'blinc',
       libraryTarget: 'commonjs2',
