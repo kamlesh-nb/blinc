@@ -1,64 +1,129 @@
+const { tags, svgs } = require('./types')
+const spreadKids = (kids) => {
+  let _kids = {};
+  for (let i = 0; i < kids.length; i++) {
+    _kids[i] = kids[i];
+  }
+  return _kids;
+};
+tags.split(",").forEach((tag) => {
+  exports[tag] = (...args) => {
+    let kids,
+      attrs,
+      elem,
+      key,
+      isSvg = false;
+    Array.isArray(args[0])
+      ? (kids = spreadKids(args[0]))
+      : typeof args[0] === "object"
+      ? (attrs = args[0])
+      : null;
+    Array.isArray(args[1])
+      ? (kids = spreadKids(args[1]))
+      : typeof args[1] === "object"
+      ? (attrs = args[1])
+      : null;
+    return { tag, attrs: attrs || {}, children: kids || {}, elem, key, isSvg };
+  };
+});
+
+svgs.split(",").forEach((tag) => {
+  exports[tag] = (...args) => {
+    let kids,
+      attrs,
+      elem,
+      key,
+      isSvg = true;
+    Array.isArray(args[0])
+      ? (kids = spreadKids(args[0]))
+      : typeof args[0] === "object"
+      ? (attrs = args[0])
+      : null;
+    Array.isArray(args[1])
+      ? (kids = spreadKids(args[1]))
+      : typeof args[1] === "object"
+      ? (attrs = args[1])
+      : null;
+    return { tag, attrs: attrs || {}, children: kids || {}, elem, key, isSvg };
+  };
+});
+
 const renderElement = (vNode) => {
   if (typeof vNode === "string") {
     return document.createTextNode(vNode);
   }
-  const $el = vNode.isSvg 
-      ? document.createElementNS('http://www.w3.org/2000/svg', vNode.tag) 
-      : document.createElement(vNode.tag);
+  const $el = vNode.isSvg
+    ? document.createElementNS("http://www.w3.org/2000/svg", vNode.tag)
+    : document.createElement(vNode.tag);
 
   vNode.elem = $el;
 
-  for (const [k, v] of Object.entries(vNode.attrs)) {
-    if (typeof v === "function") {
-      $el.addEventListener(k.slice(2), v, true);
+  for (var key in vNode.attrs) {
+    if (typeof vNode.attrs[key] === "function") {
+      $el.addEventListener(key.slice(2), vNode.attrs[key], true);
     } else {
-      if (k === "text") {
-        $el.textContent = v;
+      if (key === "text") {
+        $el.textContent = vNode.attrs[key];
+      } else if (key === "ref") {
+        vNode.attrs[key].node = $el;
       } else {
-        $el.setAttribute(k, v);
+        $el.setAttribute(key, vNode.attrs[key]);
       }
     }
   }
 
-  for (const [k, kid] of Object.entries(vNode.children)) {
-    if(typeof kid === "number")
-      throw new Error('Number cannot be used in the document, use String() instead...')
-  
-    if (typeof kid !== "string") {
-     kid.key = k;
+  for (var kid in vNode.children) {
+    if (typeof vNode.children[kid] === "number")
+      throw new Error(
+        "Number cannot be used in the document, use String() instead..."
+      );
+
+    if (typeof vNode.children[kid] !== "string") {
+      vNode.children[kid].key = kid;
     }
-    var $child = renderElement(kid);
+    var $child = renderElement(vNode.children[kid]);
     $el.appendChild($child);
   }
+
   return $el;
 };
 
 const diffAttribs = (oNode, nNode, patches) => {
-  for (const [k, v] of Object.entries(nNode.attrs)) {
-    if (oNode.attrs[k] === undefined || oNode.attrs[k] !== v) {
-      patches.attribs.push(() => {
-        if (typeof v !== "function") {
-          if (k === "text") {
-            oNode.elem.textContent = v;
-          } else {
-            oNode.elem.setAttribute(k, v);
-          }
+  const patch = (key) => {
+    patches.attribs.push(() => {
+      if (typeof nNode.attrs[key] !== "function") {
+        if (key === "text") {
+          oNode.elem.textContent = nNode.attrs[key];
+        } else if (key === "ref") {
+          nNode.attrs[key].node = oNode.elem
         } else {
-          oNode.elem.removeEventListener(k.slice(2), oNode.attrs[k], true);
-          oNode.elem.addEventListener(k.slice(2), v, true);
+          oNode.elem.setAttribute(key, nNode.attrs[key]);
         }
-        oNode.attrs[k] = v;
-      });
+      } else {
+        oNode.elem.removeEventListener(key.slice(2), oNode.attrs[key], true);
+        oNode.elem.addEventListener(key.slice(2), nNode.attrs[key], true);
+      }
+      oNode.attrs[key] = nNode.attrs[key];
+    });
+  };
+  for (const key in nNode.attrs) {
+    if (
+      oNode.attrs[key] === undefined ||
+      oNode.attrs[key] !== nNode.attrs[key]
+    ) {
+      patch(key);
     }
   }
-
-  for (const k in oNode.attrs) {
-    if (!(k in nNode.attrs)) {
+  const remove = (key) => {
+    if (!(key in nNode.attrs)) {
       patches.attribs.push(() => {
-        oNode.elem.removeAttribute(k);
-        delete oNode.attrs[k];
+        oNode.elem.removeAttribute(key);
+        delete oNode.attrs[key];
       });
     }
+  };
+  for (const k in oNode.attrs) {
+    remove(k);
   }
 };
 
@@ -68,7 +133,7 @@ const diffKids = (oNode, nNode, patches) => {
 
   const len = xLen > yLen ? xLen : yLen;
 
-  for (let i = 0; i < len; i++) {
+  const patch = (i) => {
     if (oNode.children[i] === undefined) {
       patches.kids.push(() => {
         const $el = renderElement(nNode.children[i]);
@@ -85,6 +150,10 @@ const diffKids = (oNode, nNode, patches) => {
     } else {
       diff(oNode, i, oNode.children[i], nNode.children[i], patches);
     }
+  };
+
+  for (let i = 0; i < len; i++) {
+    patch(i);
   }
 };
 
@@ -137,25 +206,24 @@ const runEffects = (effects, dispatch) => {
   });
 };
 
-const View = (props = {}) => {
-  let vOldDom;
-  let $viewNode;
-  let oState = props.init[0] || null;
-  let onMount = props.init[1] || null;
-  const update = props.update;
-  const view = props.view;
-  const subscriptions = props.subscriptions || null;
-  let subs = [];
-  let unsubs = [];
+exports.Elements = (props = {}) => {
+  let vOldDom, $viewNode;
+  let oState = props.init ? props.init[0] : null;
+  let onMount = props.init ? props.init[1] : null;
+  const reducer = props.reducer;
+  const render = props.render;
+  const subscriptions = props.subscriptions ? props.subscriptions : null;
+  let subs = [],
+    unsubs = [];
 
   const applyState = (nState) => {
-    var vNewDom = view(nState, dispatch);
+    var vNewDom = render(nState, dispatch);
     diffAndPatch(vOldDom, vNewDom);
     Object.assign(oState, nState);
   };
 
   const dispatch = (msg) => {
-    const nState = update(msg, oState);
+    const nState = reducer(msg, oState);
     const commands = nState[1];
     if (commands) {
       runEffects(commands, dispatch);
@@ -164,7 +232,7 @@ const View = (props = {}) => {
   };
 
   const mount = ($node) => {
-    vOldDom = oState ? view(oState, dispatch) : view();
+    vOldDom = oState ? render(oState, dispatch) : render();
     $viewNode = renderElement(vOldDom);
     if ($node.childNodes.length > 0) {
       $node.replaceChild($viewNode, $node.childNodes[0]);
@@ -176,7 +244,7 @@ const View = (props = {}) => {
     }
     if (subscriptions) {
       subscriptions.forEach((subscription) => {
-        subs.push(subscription.subscribe);
+        subs.push([subscription.subscribe]);
         unsubs.push(subscription.unsubscribe);
       });
       runEffects(subs, dispatch);
@@ -192,121 +260,93 @@ const View = (props = {}) => {
   return { mount, unMount };
 };
 
-const formFields = (props = {}) => {
-  const fields = {};
-  Object.assign(fields, props);
-  const setValue = (event) => {
-    fields[event.target.id] = event.target.value;
-  };
-  return { fields, setValue };
-};
+exports.push = (path) => {
+  history.pushState({ path: path }, "", path);
+}
 
-let $header, $main, $footer;
-let appStateListeners = [];
-let currentView;
-
-const ChangeView = (payload, dispatch) => {
-  let route = payload;
-  let props = { ...payload, dispatch: dispatch };
-  currentView.unMount();
-  currentView = View(route.view(props));
-  currentView.mount($main);
-};
-
-const AppStateChanged = (data, dispatch) => {
-  appStateListeners.forEach((listener) => {
-    listener({ type: "APP_STATE_CHANGED", payload: data });
+let activeLink
+exports.Link = (props = {}) => {  
+  return exports.a({ 
+   ...props,
+    onclick: (e) => {
+      if(activeLink)
+        activeLink.classList.remove('active')
+      activeLink = e.target;
+      activeLink.classList.add('active')
+      e.preventDefault();
+      exports.push(e.target.pathname)
+    },
   });
-  dispatch({ type: "STATE_SHARED" });
 };
 
-const WatchAppState = (dispacth) => {
-  appStateListeners.push(dispacth);
-};
+exports.Routes = (props = {}) => {
+  return props
+}
 
-const App = (props = {}) => {
-  let oState = props.init[0] || null;
-  let onAppStart = props.init[1] || null;
-  let update = props.update || null;
-  let view = props.view || null;
-  let globals;
+exports.Router = (state, dispatch, props = {}) => {
+  let rootRef = { node: null };
+  let routes
 
-  const dispatch = (msg) => {
-    const nState = update(msg, oState);
-    const commands = nState[1];
-    if (commands) {
-      runEffects(commands, dispatch);
-    }
+  history.pushState = ( f => function pushState(){
+    var retVal = f.apply(this, arguments);
+    window.dispatchEvent(new Event('pushstate'));
+    return retVal;
+  })(history.pushState);
+
+  window.onpopstate = (event) => {
+    pop(window.location.pathname);
   };
 
-  const run = () => {
-    let doc = oState ? view(oState, dispatch) : view();
-    if(doc.head){ 
-      if(doc.head.meta){
-        doc.head.meta.forEach((meta) => {
-          var $meta = document.createElement('meta');
-          $meta.name = meta.name
-          $meta.setAttribute('content', meta.content)
-          document.head.appendChild($meta)
-        })
-      }
-      if(doc.head.title){
-        document.title = doc.head.title
-      }
-      if(doc.head.cssRules){
-        let $style = document.createElement('style')
-        document.head.appendChild($style)
-        let styleSheet = $style.sheet
-        doc.head.cssRules.forEach((rule) => {
-          styleSheet.insertRule(`${rule.name}${rule.value}`)
-        })
-      }
+  window.addEventListener('pushstate', (event) => {
+    mount(rootRef.node, window.location.pathname);
+  })
+
+  const match = (route, requestPath) => {
+    const paramNames = [];
+    const regexPath =
+      route.path.replace(/([:*])(\w+)/g, (full, colon, name) => {
+        paramNames.push(name);
+        return "([^/]+)";
+      }) + "(?:/|$)";
+
+    let params = {};
+
+    const routeMatch = requestPath.match(new RegExp(regexPath));
+    if (routeMatch !== null) {
+      params = routeMatch
+        .slice(1, routeMatch.length)
+        .reduce((params, value, index) => {
+          if (params === null) params = {};
+          params[paramNames[index]] = value;
+          return params;
+        }, null);
     }
-    if(doc.body){
-      if (doc.body.header) {
-        $header = document.createElement("header");
-        document.body.appendChild($header);
-        globals = { state: oState, dispacth: dispatch };
-        View(doc.body.header(globals)).mount($header);
-      } else {
-        throw new Error('header is mandatory in body of App');
-      }
-      if (doc.body.main) {
-        $main = document.createElement("main");
-        document.body.appendChild($main);
-        let route = doc.body.main;
-        globals = { params: route.params, state: oState, dispatch: dispatch };
-        currentView = View(route.view(globals));
-        currentView.mount($main);
-      } else {
-        throw new Error('main is mandatory in body of App');
-      }
-      if (doc.body.footer) {
-        $footer = document.createElement("footer");
-        document.body.appendChild($footer);
-        globals = { state: oState, dispacth: dispatch };
-        View(doc.body.footer(globals)).mount($footer);
-      }
-    } else {
-      throw new Error('body is mandatory in App');
-    }
-    if (onAppStart) {
-      runEffects(onAppStart, dispatch);
-    }
+    route["params"] = params;
+    return routeMatch;
   };
-  run();
-};
 
-const pipe = (...fns) => fns.reduce((f, g) => (...args) => g(f(...args)));
-const compose = (...fns) => fns.reduce((f, g) => (...args) => f(g(...args)));
+  const pop = (path) => {
+    mount(rootRef.node, path)
+  };
 
-export {
-  View,
-  App,
-  formFields,
-  ChangeView,
-  AppStateChanged,
-  WatchAppState,
-  pipe,
-  compose,
+  const mount = ($node, path) => {
+    const route = routes.filter((route) => match(route, path))[0];
+    let props = { state, dispatch, params: route.params}
+    this.View(route.view(props)).mount($node)
+  };
+
+  document.addEventListener('readystatechange', event => {
+    if (event.target.readyState === 'complete') {
+      let path = '/'
+      mount(rootRef.node, path);
+    }
+  });
+
+  if (props) {
+    props.attrs.ref = rootRef;
+    routes = props.children[0]
+    props.children = {}
+  }
+
+  return props
 };

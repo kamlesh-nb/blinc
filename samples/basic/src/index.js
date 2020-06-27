@@ -1,5 +1,5 @@
-import { View } from "blincjs";
-import { div, button } from "blincjs/tags";
+import { Elements } from "blinc";
+import { div, button } from "blinc";
 
 let initialState = {
   count: 0,
@@ -7,7 +7,7 @@ let initialState = {
 const Counter = () => {
   let init = [initialState];
 
-  const update = (msg, state) => {
+  const reducer = (msg, state) => {
     switch (msg.type) {
       case "INCREMENT":
         return [Object.assign(state, { count: state.count + 1 })];
@@ -18,7 +18,7 @@ const Counter = () => {
     }
   };
 
-  const view = (state, dispatch) => {
+  const render = (state, dispatch) => {
     return div({}, [
       button({
         text: "+",
@@ -35,8 +35,8 @@ const Counter = () => {
       }),
     ]);
   };
-  return { init, update, view };
+  return { init, reducer, render };
 };
 
-let counter = View(Counter());
+let counter = Elements(Counter());
 counter.mount(document.body);

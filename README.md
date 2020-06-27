@@ -90,14 +90,13 @@ Following is the structure of App.
 //myApp.js
 
 import { App, ChangeView } from 'blinc'
-import { css } from 'blinc/css'
+import { addRules, getRules } from 'blinc/css'
 import style from './style'
 
 let initialState = {
   isUserLoggedIn: false,
   userProfile: userData,
 };
-const { addRules, getRules } = css()
 
 //add css rules defined as plain javascript object
 addRules(style) 
@@ -194,7 +193,7 @@ The samples folder in the repository contains samples that covers all the featur
 
 ## Note
 
-This is an experimental project which is still work in pogress, feel free to to try and raise issue if you find any. Anyone who likes to contribute to the project is most welcome.
+This is an experimental project which is still work in pogress, feel free to try and raise issue if you find any. Anyone who likes to contribute to the project is most welcome.
 
 ## Licence
 

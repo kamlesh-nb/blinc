@@ -1,18 +1,37 @@
 {
   "name": "blinc",
   "version": "0.1.1",
-  "description": "a nano framework for developing functional web ui",
+  "description": "framework for developing functional web ui",
   "main": "index.js",
   "scripts": {
-    "build": "node build.js"
+    "build": "webpack --mode=production"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
-    "terser": "^4.8.0"
+    "path": "^0.12.7",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
   },
+  "files": [
+    "dist/index.js",
+    "dist/index.js.map",
+    "README.md"
+  ],
+  "keywords": [
+    "blinc",
+    "javascript",
+    "function ui",
+    "vdom",
+    "virtual-dom",
+    "web framework"
+  ],
   "author": "kamlesh bambarde",
-  "license": "MIT",
-  "dependencies": {}
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kamlesh-nb/blinc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kamlesh-nb/blinc.git/issues"
+  },
+  "homepage": "https://github.com/kamlesh-nb",
+  "license": "MIT"
 }
