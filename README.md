@@ -1,10 +1,10 @@
 # Blinc
 
-A Framework for building Functional Web UI based on ELM like program pattern. 
+A Framework for building Functional Web UI based on ELM like program pattern using Declarative API. **Blinc** can be used to develop single page application, a complete Composable UI that can be designed using pure javascript functions that corresponds to the predominantly used Html as well as SVG tags. There's no need to use any sort of markup language to define the UI. It is possible to define stateless as well as stateful Element using ***Blinc***. ***Blinc*** also has and in-built basic *history API* based router, that handles URL Parameter. 
 
 > Blinc uses virtual dom that facilitates the re-rendering of view in response to the state changes and thus complies to the principle; ***(state) => view*** 
 
-# Getting Started
+## Getting Started
 
 Blinc can be installed using npm
 
@@ -12,7 +12,7 @@ Blinc can be installed using npm
 npm i blinc
 ```
 
-# Element
+## Element
 
 Element can be used to create basic building blocks for developing a Functional Web UI. Following is the structure for defining Element.
 
@@ -71,7 +71,7 @@ Element(Counter()).mount(document.body)
 
 ### State Management
 
-In blinc, you can have both stateless and stateful ***Element***. In case ***Element*** is hosting other ***Elements*** into it (in case of ***single page application***), the state of the hosting ***Element*** can be shared with it's child ***Elements***. Child ***Elements*** can dispatch messages to outermost ***i.e.*** the parent ***Element*** and change the state that subsequently causes the re-rendering of the entire ***Element*** tree both parent and the child.
+In ***Blinc***, you can have both stateless and stateful ***Element***. In case ***Element*** is hosting other ***Elements*** into it (i.e. ***single page application***), the state of the hosting ***Element*** can be shared with it's child ***Elements***. The Child ***Elements*** can dispatch messages to outermost ***i.e.*** the parent ***Element*** and change the state which subsequently causes the re-rendering of the entire ***Element*** tree both parent and the child.
 
 The stateless ***Element*** can consume the state of parent ***Element***, 
 
