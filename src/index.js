@@ -206,7 +206,7 @@ const runEffects = (effects, dispatch) => {
   });
 };
 
-exports.Elements = (props = {}) => {
+exports.Element = (props = {}) => {
   let vOldDom, $viewNode;
   let oState = props.init ? props.init[0] : null;
   let onMount = props.init ? props.init[1] : null;

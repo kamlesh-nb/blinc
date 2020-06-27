@@ -1,5 +1,4 @@
-import { Elements } from "blinc";
-import { div, button } from "blinc";
+import { Element, div, button } from "blinc";
 
 let initialState = {
   count: 0,
@@ -38,5 +37,4 @@ const Counter = () => {
   return { init, reducer, render };
 };
 
-let counter = Elements(Counter());
-counter.mount(document.body);
+Element(Counter()).mount(document.body);

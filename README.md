@@ -2,7 +2,7 @@
 
 A Framework for building Functional Web UI based on ELM like program pattern. 
 
-> Blinc uses virtual dom that facilitates the re-rendering of view in response to the state changes and thus complies to the principle; **(state) => view** 
+> Blinc uses virtual dom that facilitates the re-rendering of view in response to the state changes and thus complies to the principle; ***(state) => view*** 
 
 # Getting Started
 
@@ -12,25 +12,25 @@ Blinc can be installed using npm
 npm i blinc
 ```
 
-# Elements
+# Element
 
-Elements can be used to create basic building blocks for developing a Functional UI. Following is the structure for defining Elements.
+Element can be used to create basic building blocks for developing a Functional Web UI. Following is the structure for defining Element.
 
-- **init** is an array (optional), that contains initial state of the Elements as well as the effects that should run when the Elements are mounted to physical DOM. 
+- The ***init*** is an array (optional), that contains initial state of the Element as well as the effects that should run when the Element are mounted to physical DOM. 
 
-- **reducer** is a pure function (optional), that is used to update the state of the Elements in response to the messages that are dispatched, which subsequently triggers the re-rendering. This function returns an array that contains the updated state and can optionally return side-effects that is supposed to be executed.
+- The ***reducer*** is a pure function (optional), that is used to update the state of the Element in response to the messages that are dispatched, which subsequently triggers the re-rendering. This function returns an array that contains the updated state and can optionally return side-effects that is supposed to be executed.
 
-- **render** is a pure function, that is used to define the Virtual Tree for the **Elements** which gets converted to physical elements and loaded in to the DOM. This function can have optionally have *state* and *dispatch* as arguments if state based rendering is requried. 
+- The ***render*** is a pure function, that is used to define the Virtual Tree for the **Element** which gets converted to physical Element and loaded in to the DOM. This function can have optionally have ***state*** and ***dispatch*** as arguments if state based rendering is requried. 
 
-- **subscriptions** is an array (optional) that contains the subscription of side-effects by the Elements.
+- The ***subscriptions*** is an array (optional) that contains the subscription of side-effects by the Element. ***Subscriptions*** can be used to *listen* to the **Events**, messages on **WebSockets** or the changes to the **Real-Time Databases** like firestore.
 
-As you can see from the above, only **render** function is the only mandatory part of Elements.
+As you can see from the above, only ***render*** function is the only mandatory part of Element.
 
-Following is an example of how Elements can be define.
+Following is an example of how Element can be define.
 
 ```javascript
 //counter.js
-import { Elements, div, button } from 'blinc'
+import { Element, div, button } from 'blinc'
 
 let initialState = {
   count: 0,
@@ -46,7 +46,7 @@ const Counter = (props) => {
     }
   }
   const render = (state, dispatch) => {
-    return div({}, [
+    return div([
       button({
         text: "+",
         onclick: (e) => {
@@ -65,20 +65,22 @@ const Counter = (props) => {
   return { init, reducer, render };
 }
 
-Elements(Counter()).mount(document.body)
+Element(Counter()).mount(document.body)
 
 ```
 
 ### State Management
 
-In blinc, you can have both stateless and statefull Elements. In case Elements are hosting other Elements into it (single page application), the state of the outermost Elements can be shared with the inner Elements. Inner Elements can dispatch messages to outermost Elements and change the state that causes the re-rendering of the entire tree of Elements both inner and outer.
+In blinc, you can have both stateless and stateful ***Element***. In case ***Element*** is hosting other ***Elements*** into it (in case of ***single page application***), the state of the hosting ***Element*** can be shared with it's child ***Elements***. Child ***Elements*** can dispatch messages to outermost ***i.e.*** the parent ***Element*** and change the state that subsequently causes the re-rendering of the entire ***Element*** tree both parent and the child.
+
+The stateless ***Element*** can consume the state of parent ***Element***, 
 
 Lets see an example how it all look...
 
 ```javascript
 //myApp.js
 
-import { View, Link, Router, Routes, hr, br, div, nav, ul, li, button } from "blinc";
+import { Element, Link, Router, Routes, hr, br, div, nav, ul, li, button } from "blinc";
 
 const Home = (props) => {
   const render = () => {
@@ -86,12 +88,14 @@ const Home = (props) => {
   };
   return { render };
 };
+
 const Contact = (props) => {
   const render = () => {
     return div(["Contact"]);
   };
   return { render };
 };
+
 const About = (props) => {
   const render = () => {
     return div(["About"]);
@@ -121,8 +125,10 @@ const SignOut = (props) => {
   return { render };
 };
 
+let initialState = { count: 0, isUserLoggedIn: false }
+
 const myApp = () => {
-  let init = [{ count: 0, isUserLoggedIn: false }];
+  let init = [initialState];
   const reducer = (msg, state) => {
     switch (msg.type) {
       case "LOGGED_IN":
@@ -162,16 +168,18 @@ const myApp = () => {
   return { init, reducer, render };
 };
 
-Elements(myApp()).mount(document.body);
+Element(myApp()).mount(document.body);
 
 ```
 
-As you can see from the above code example, the inner Elements can disptach messages to the outermost Elements, which subsequently trigger the re-render for entire tree.
+As you can see from the above code example, the child ***Elements*** can disptach messages to the parent ***Element***, which subsequently triggers the re-rendering of entire ***Element*** tree. 
+
+State can be defined by inidividual ***Element*** or one giant state at the parent ***Element*** level or both, i.e. shared state at parent ***Element*** level and individual state in it's own ***Element***.
 
 
 ## Samples
 
-The samples folder in the repository contains samples that covers all the features in the framework. 
+The samples folder in the repository contains samples that covers all the features in the framework. At the moment there's only basic example, as time permits, I will publish more examples that demonstrates how to implement side-effects using ***commands*** and ***subscriptions***.
 
 ## Note
 
