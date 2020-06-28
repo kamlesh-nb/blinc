@@ -2,6 +2,7 @@ node_modules
 build
 lib
 config.js
+.npmrc
 .cache
 dist
 .DS_Store

@@ -1,52 +1,34 @@
-const { tags, svgs } = require('./types')
+const types = [
+  {isSvg: false, tagNames: "a,abbr,address,area,article,aside,audio,b,base,bdi,bdo,big,blockquote,body,br,button,canvas,caption,cite,code,col,colgroup,data,datalist,dd,del,details,dfn,dialog,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,head,header,hgroup,hr,html,i,iframe,img,input,ins,kbd,keygen,label,legend,li,link,main,map,mark,marquee,menu,menuitem,meta,meter,nav,noscript,object,ol,optgroup,option,output,p,param,picture,pre,progress,q,rp,rt,ruby,s,samp,script,section,select,small,source,span,strong,style,sub,summary,sup,table,tbody,td,textarea,tfoot,th,thead,time,title,tr,track,u,ul,var,video,wbr"},
+  {isSvg: true, tagNames: "circle,clipPath,defs,ellipse,foreignObject,g,image,line,linearGradient,marker,mask,path,pattern,polygon,polyline,radialGradient,rect,stop,svg,text,tspan"},
+];
 const spreadKids = (kids) => {
   let _kids = {};
-  for (let i = 0; i < kids.length; i++) {
-    _kids[i] = kids[i];
-  }
+  for (let i = 0; i < kids.length; i++) { _kids[i] = kids[i];}
   return _kids;
 };
-tags.split(",").forEach((tag) => {
-  exports[tag] = (...args) => {
-    let kids,
-      attrs,
-      elem,
-      key,
-      isSvg = false;
-    Array.isArray(args[0])
-      ? (kids = spreadKids(args[0]))
-      : typeof args[0] === "object"
-      ? (attrs = args[0])
-      : null;
-    Array.isArray(args[1])
-      ? (kids = spreadKids(args[1]))
-      : typeof args[1] === "object"
-      ? (attrs = args[1])
-      : null;
-    return { tag, attrs: attrs || {}, children: kids || {}, elem, key, isSvg };
-  };
-});
-
-svgs.split(",").forEach((tag) => {
-  exports[tag] = (...args) => {
-    let kids,
-      attrs,
-      elem,
-      key,
-      isSvg = true;
-    Array.isArray(args[0])
-      ? (kids = spreadKids(args[0]))
-      : typeof args[0] === "object"
-      ? (attrs = args[0])
-      : null;
-    Array.isArray(args[1])
-      ? (kids = spreadKids(args[1]))
-      : typeof args[1] === "object"
-      ? (attrs = args[1])
-      : null;
-    return { tag, attrs: attrs || {}, children: kids || {}, elem, key, isSvg };
-  };
-});
+types.forEach((t) => {
+  t.tagNames.split(",").forEach((tag) => {
+    exports[tag] = (...args) => {
+      let kids,
+        attrs,
+        elem,
+        key,
+        isSvg = t.isSvg;
+      Array.isArray(args[0])
+        ? (kids = spreadKids(args[0]))
+        : typeof args[0] === "object"
+        ? (attrs = args[0])
+        : null;
+      Array.isArray(args[1])
+        ? (kids = spreadKids(args[1]))
+        : typeof args[1] === "object"
+        ? (attrs = args[1])
+        : null;
+      return { tag, attrs: attrs || {}, children: kids || {}, elem, key, isSvg };
+    };
+  });
+})
 
 const renderElement = (vNode) => {
   if (typeof vNode === "string") {
@@ -55,9 +37,7 @@ const renderElement = (vNode) => {
   const $el = vNode.isSvg
     ? document.createElementNS("http://www.w3.org/2000/svg", vNode.tag)
     : document.createElement(vNode.tag);
-
   vNode.elem = $el;
-
   for (var key in vNode.attrs) {
     if (typeof vNode.attrs[key] === "function") {
       $el.addEventListener(key.slice(2), vNode.attrs[key], true);
@@ -95,7 +75,7 @@ const diffAttribs = (oNode, nNode, patches) => {
         if (key === "text") {
           oNode.elem.textContent = nNode.attrs[key];
         } else if (key === "ref") {
-          nNode.attrs[key].node = oNode.elem
+          nNode.attrs[key].node = oNode.elem;
         } else {
           oNode.elem.setAttribute(key, nNode.attrs[key]);
         }
@@ -130,7 +110,6 @@ const diffAttribs = (oNode, nNode, patches) => {
 const diffKids = (oNode, nNode, patches) => {
   const xLen = Object.keys(oNode.children).length;
   const yLen = Object.keys(nNode.children).length;
-
   const len = xLen > yLen ? xLen : yLen;
 
   const patch = (i) => {
@@ -262,44 +241,42 @@ exports.Element = (props = {}) => {
 
 exports.push = (path) => {
   history.pushState({ path: path }, "", path);
-}
+};
 
-let activeLink
-exports.Link = (props = {}) => {  
-  return exports.a({ 
-   ...props,
+let activeLink;
+exports.Link = (props = {}) => {
+  return exports.a({
+    ...props,
     onclick: (e) => {
-      if(activeLink)
-        activeLink.classList.remove('active')
+      if (activeLink) activeLink.classList.remove("active");
       activeLink = e.target;
-      activeLink.classList.add('active')
+      activeLink.classList.add("active");
       e.preventDefault();
-      exports.push(e.target.pathname)
+      exports.push(e.target.pathname);
     },
   });
 };
 
 exports.Routes = (props = {}) => {
-  return props
-}
+  return props;
+};
 
 exports.Router = (state, dispatch, props = {}) => {
-  let rootRef = { node: null };
-  let routes
+  let rootRef = { node: null }, routes, currElem = null;
+  history.pushState = ((f) =>
+    function pushState() {
+      var retVal = f.apply(this, arguments);
+      window.dispatchEvent(new Event("pushstate"));
+      return retVal;
+    })(history.pushState);
 
-  history.pushState = ( f => function pushState(){
-    var retVal = f.apply(this, arguments);
-    window.dispatchEvent(new Event('pushstate'));
-    return retVal;
-  })(history.pushState);
-
-  window.onpopstate = (event) => {
+  window.addEventListener("popstate", (event) => {
     pop(window.location.pathname);
-  };
+  });
 
-  window.addEventListener('pushstate', (event) => {
+  window.addEventListener("pushstate", (event) => {
     mount(rootRef.node, window.location.pathname);
-  })
+  });
 
   const match = (route, requestPath) => {
     const paramNames = [];
@@ -325,28 +302,27 @@ exports.Router = (state, dispatch, props = {}) => {
     return routeMatch;
   };
 
-  const pop = (path) => {
-    mount(rootRef.node, path)
-  };
+  const pop = (path) => {mount(rootRef.node, path);};
 
   const mount = ($node, path) => {
     const route = routes.filter((route) => match(route, path))[0];
-    let props = { state, dispatch, params: route.params}
-    this.Element(route.element(props)).mount($node)
+    if (currElem) { currElem.unMount();}
+    let props = { state, dispatch, params: route.params };
+    currElem = this.Element(route.element(props));
+    currElem.mount($node);
   };
 
-  document.addEventListener('readystatechange', event => {
-    if (event.target.readyState === 'complete') {
-      let path = '/'
+  document.addEventListener("readystatechange", (event) => {
+    if (event.target.readyState === "complete") {
+      let path = "/";
       mount(rootRef.node, path);
     }
   });
 
   if (props) {
     props.attrs.ref = rootRef;
-    routes = props.children[0]
-    props.children = {}
+    routes = props.children[0];
+    props.children = {};
   }
-
-  return props
+  return props;
 };

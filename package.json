@@ -1,13 +1,10 @@
 {
   "name": "blinc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Framework for Developing Functional Web UI",
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode=production"
-  },
-  "publishConfig": {
-    "registry":"https://npm.pkg.github.com/"
   },
   "devDependencies": {
     "path": "^0.12.7",

@@ -1,6 +1,6 @@
 # Blinc
 
-A Framework for building Functional Web UI based on ELM like program pattern using Declarative API. **Blinc** can be used to develop single page application, a complete Composable UI that can be designed using pure javascript functions that corresponds to the predominantly used Html as well as SVG tags. There's no need to use any sort of markup language to define the UI. It is possible to define stateless as well as stateful Element using **_Blinc_**. **_Blinc_** also has an in-built basic _history API_ based router, that handles routing and can also capture URL Parameter.
+A Framework for building Functional Web UI based on ELM like program pattern using Declarative API. **Blinc** can be used to develop single page application, a complete Composable UI that can be designed using pure javascript functions that corresponds to the predominantly used Html as well as SVG tags. There's no need to use any sort of markup language to define the UI. It is possible to define stateless as well as stateful Element using **_blinc_**. **_Blinc_** also has an in-built basic **_history API_** based router, that handles routing of the hosted **_Elements_** and can also capture URL Parameter.
 
 > Blinc uses virtual dom that facilitates the re-rendering of view in response to the state changes and thus complies to the principle; **_(state) => view_**
 
@@ -14,17 +14,15 @@ npm i blinc
 
 ## Element
 
-Element can be used to create basic building blocks for developing a Functional Web UI. Following is the structure for defining Element.
+Element is the basic building block for developing a Functional Web UI. Element hosts all the required Html to design the UI and can also host other Elements. Following is the structure for defining Element.
 
 - The **_init_** is an array (optional), that contains initial state of the Element as well as the effects that should run when the Element are mounted to physical DOM.
 
 - The **_reducer_** is a pure function (optional), that is used to update the state of the Element in response to the messages that are dispatched, which subsequently triggers the re-rendering. This function returns an array that contains the updated state and can optionally return side-effects that is supposed to be executed.
 
-- The **_render_** is a pure function, that is used to define the Virtual Tree for the **Element** which gets converted to physical Element and loaded in to the DOM. This function can have optionally have **_state_** and **_dispatch_** as arguments if state based rendering is requried.
+- The **_render_** is an only mandatory pure function, that is used to define the Virtual Tree for the **Element** which gets converted to physical Element and loaded in to the DOM. This function can have optionally have **_state_** and **_dispatch_** as arguments if state based rendering is requried.
 
 - The **_subscriptions_** is an array (optional) that contains the subscription of side-effects by the Element. **_Subscriptions_** can be used to _listen_ to the **Events**, messages on **WebSockets** or the changes to the **Real-Time Databases** like firestore.
-
-As you can see from the above, only **_render_** function is the only mandatory part of Element.
 
 Following is an example of how Element can be define.
 
