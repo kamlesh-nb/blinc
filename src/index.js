@@ -1,38 +1,6 @@
-const types = [
-  {isSvg: false, tagNames: "a,abbr,address,area,article,aside,audio,b,base,bdi,bdo,big,blockquote,body,br,button,canvas,caption,cite,code,col,colgroup,data,datalist,dd,del,details,dfn,dialog,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,head,header,hgroup,hr,html,i,iframe,img,input,ins,kbd,keygen,label,legend,li,link,main,map,mark,marquee,menu,menuitem,meta,meter,nav,noscript,object,ol,optgroup,option,output,p,param,picture,pre,progress,q,rp,rt,ruby,s,samp,script,section,select,small,source,span,strong,style,sub,summary,sup,table,tbody,td,textarea,tfoot,th,thead,time,title,tr,track,u,ul,var,video,wbr"},
-  {isSvg: true, tagNames: "circle,clipPath,defs,ellipse,foreignObject,g,image,line,linearGradient,marker,mask,path,pattern,polygon,polyline,radialGradient,rect,stop,svg,text,tspan"},
-];
-const spreadKids = (kids) => {
-  let _kids = {};
-  for (let i = 0; i < kids.length; i++) { _kids[i] = kids[i];}
-  return _kids;
-};
-types.forEach((t) => {
-  t.tagNames.split(",").forEach((tag) => {
-    exports[tag] = (...args) => {
-      let kids,
-        attrs,
-        elem,
-        key,
-        isSvg = t.isSvg;
-      Array.isArray(args[0])
-        ? (kids = spreadKids(args[0]))
-        : typeof args[0] === "object"
-        ? (attrs = args[0])
-        : null;
-      Array.isArray(args[1])
-        ? (kids = spreadKids(args[1]))
-        : typeof args[1] === "object"
-        ? (attrs = args[1])
-        : null;
-      return { tag, attrs: attrs || {}, children: kids || {}, elem, key, isSvg };
-    };
-  });
-})
-
 const renderElement = (vNode) => {
   if (typeof vNode === "string") {
-    return document.createTextNode(vNode);
+    return document.createTextNode(vNode.toString());
   }
   const $el = vNode.isSvg
     ? document.createElementNS("http://www.w3.org/2000/svg", vNode.tag)
@@ -53,11 +21,6 @@ const renderElement = (vNode) => {
   }
 
   for (var kid in vNode.children) {
-    if (typeof vNode.children[kid] === "number")
-      throw new Error(
-        "Number cannot be used in the document, use String() instead..."
-      );
-
     if (typeof vNode.children[kid] !== "string") {
       vNode.children[kid].key = kid;
     }
@@ -69,7 +32,8 @@ const renderElement = (vNode) => {
 };
 
 const diffAttribs = (oNode, nNode, patches) => {
-  const patch = (key) => {
+
+  const set = (key) => {
     patches.attribs.push(() => {
       if (typeof nNode.attrs[key] !== "function") {
         if (key === "text") {
@@ -86,14 +50,7 @@ const diffAttribs = (oNode, nNode, patches) => {
       oNode.attrs[key] = nNode.attrs[key];
     });
   };
-  for (const key in nNode.attrs) {
-    if (
-      oNode.attrs[key] === undefined ||
-      oNode.attrs[key] !== nNode.attrs[key]
-    ) {
-      patch(key);
-    }
-  }
+ 
   const remove = (key) => {
     if (!(key in nNode.attrs)) {
       patches.attribs.push(() => {
@@ -102,6 +59,15 @@ const diffAttribs = (oNode, nNode, patches) => {
       });
     }
   };
+
+  for (const key in nNode.attrs) {
+    if (
+      oNode.attrs[key] === undefined ||
+      oNode.attrs[key] !== nNode.attrs[key]
+    ) {
+      set(key);
+    }
+  }
   for (const k in oNode.attrs) {
     remove(k);
   }
@@ -185,7 +151,7 @@ const runEffects = (effects, dispatch) => {
   });
 };
 
-exports.Element = (props = {}) => {
+const Element = (props = {}) => {
   let vOldDom, $viewNode;
   let oState = props.init ? props.init[0] : null;
   let onMount = props.init ? props.init[1] : null;
@@ -239,39 +205,25 @@ exports.Element = (props = {}) => {
   return { mount, unMount };
 };
 
-exports.push = (path) => {
+const Push = (path) => {
   history.pushState({ path: path }, "", path);
 };
 
-let activeLink;
-exports.Link = (props = {}) => {
-  return exports.a({
-    ...props,
-    onclick: (e) => {
-      if (activeLink) activeLink.classList.remove("active");
-      activeLink = e.target;
-      activeLink.classList.add("active");
-      e.preventDefault();
-      exports.push(e.target.pathname);
-    },
-  });
-};
-
-exports.Routes = (props = {}) => {
+const Routes = (props = {}) => {
   return props;
 };
 
-exports.Router = (state, dispatch, props = {}) => {
+const Router = (state, dispatch, props = {}) => {
   let rootRef = { node: null }, routes, currElem = null;
-  history.pushState = ((f) =>
+  history.pushState = ((func) =>
     function pushState() {
-      var retVal = f.apply(this, arguments);
+      var retVal = func.apply(this, arguments);
       window.dispatchEvent(new Event("pushstate"));
       return retVal;
     })(history.pushState);
 
   window.addEventListener("popstate", (event) => {
-    pop(window.location.pathname);
+    mount(rootRef.node, window.location.pathname);
   });
 
   window.addEventListener("pushstate", (event) => {
@@ -302,20 +254,18 @@ exports.Router = (state, dispatch, props = {}) => {
     return routeMatch;
   };
 
-  const pop = (path) => {mount(rootRef.node, path);};
-
   const mount = ($node, path) => {
     const route = routes.filter((route) => match(route, path))[0];
-    if (currElem) { currElem.unMount();}
+    if (!route) { throw new Error(`Route for path, ${ path } not defined...`);}
+    if (currElem) { currElem.unMount(); }
     let props = { state, dispatch, params: route.params };
-    currElem = this.Element(route.element(props));
+    currElem = Element(route.element(props));
     currElem.mount($node);
   };
 
   document.addEventListener("readystatechange", (event) => {
     if (event.target.readyState === "complete") {
-      let path = "/";
-      mount(rootRef.node, path);
+      mount(rootRef.node, '/');
     }
   });
 
@@ -326,3 +276,10 @@ exports.Router = (state, dispatch, props = {}) => {
   }
   return props;
 };
+
+const App = (props = {}) => {
+  let e = Element(props);
+  e.mount(document.body);
+};
+
+export { App, Element, Push, Router, Routes };
