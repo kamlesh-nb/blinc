@@ -81,7 +81,7 @@ Lets see an example how it all look...
 //myApp.js
 
 import {
-  Element,
+  App,
   Link,
   Router,
   Routes,
@@ -194,7 +194,7 @@ const myApp = () => {
   return { init, reducer, render };
 };
 
-Element(myApp()).mount(document.body);
+App(myApp()).mount(document.body);
 ```
 
 As you can see from the above code example, the child **_Elements_** can disptach messages to the parent **_Element_**, which subsequently triggers the re-rendering of entire **_Element_** tree.
