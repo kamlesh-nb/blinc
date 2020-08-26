@@ -1,5 +1,5 @@
 import { App } from "blinc";
-import { div, button } from 'blinc/types'
+import { div, button } from "blinc/types"
 
 let initialState = {
   count: 0,
