@@ -30,13 +30,3 @@ var types = Object.assign({}, config, {
 module.exports = [
   blinc, types,       
 ];
-  // module.exports = {
-  //   entry: './src/index.js',
-  //   devtool: 'source-map',
-  //   output: {
-  //     path: path.resolve(__dirname, './'),
-  //     filename: 'index.js',
-  //     library: 'blinc',
-  //     libraryTarget: 'commonjs2',
-  //   }
-  // }
