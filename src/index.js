@@ -233,7 +233,7 @@ const Router = (state, dispatch, props = {}) => {
   const match = (route, requestPath) => {
     const paramNames = [];
     const regexPath =
-      route.path.replace(/([:*])(\w+)/g, (full, colon, name) => {
+      route.path.replace(/([:*])(\w+)/g, (name) => {
         paramNames.push(name);
         return "([^/]+)";
       }) + "(?:/|$)";
