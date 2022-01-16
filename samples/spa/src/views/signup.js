@@ -1,5 +1,6 @@
 import { div, br, form, input, button } from "../../../../src/types";
-import { Push } from '../../../../src/index'
+import { Push } from '../../../../src/index';
+import { Input, Button, Form, Col } from "../components"
 import viewState from '../utils'
 
 let initialState = {
@@ -13,35 +14,55 @@ let initialState = {
 
 const SignUp = (props) => {
   let init = [initialState]
+
+  const reducer = (msg, state) => {
+
+  }
+
   const render = (state, dispatch) => {
-    const { fields, setValue } = viewState(state)
-    return div([
-      form({class: 'Login'},[
-        input({id: 'username', placeholder: 'Enter username', value: fields.username, onchange: setValue}),
-      br(),
-      state.keyInVerificationCode
-      ? input({id: 'verificationcode', placeholder: 'Enter OTP', value: fields.verificationcode, onchange: setValue})
-      : input({id: 'password', placeholder: 'Enter password', type: 'password', value: fields.password, onchange: setValue}),
-      br(),
-      button({
-        text: "Sign Up",
-        onclick: (e) => {
-          props.dispatch({
-            type: "LOGGED_IN",
-            payload: { isUserLoggedIn: true },
-          });
-        },
-      }),
-      button({
-        text: "Cancel",
-        onclick: (e) => {
-          Push('/')
-        },
-      }),
-      ])
-    ]);
+    const { fields, setValue } = viewState(state);
+
+    return Form({
+      kids: [
+        Input({
+          id: "username",
+          type: "text",
+          placeholder: "Enter User Name",
+          value: fields.username,
+          handleChange: setValue,
+          caption: "User Name"
+        }),
+        Input({
+          id: "password",
+          type: "password",
+          placeholder: "Enter Password",
+          value: fields.password,
+          handleChange: setValue,
+          caption: "Password"
+        }),
+        Col({
+          cols: 2,
+          kids: [
+            Button({
+              id: "btnSignUp",
+              caption: "Sign Up",
+              handleClick: (e) => {
+                console.log(fields)
+              }
+            }),
+            Button({
+              id: "btnCancel",
+              caption: "Cancel",
+              handleClick: (e) => {
+                 Push("/");
+              }
+            }),
+          ]
+        })
+      ]
+    })
   };
-  return { init, render };
+  return { init, reducer, render };
 };
 
 export default SignUp

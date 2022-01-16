@@ -251,7 +251,6 @@ const Router = (state, dispatch, props = {}) => {
         }, null);
     }
     route["params"] = params;
-    console.log(route);
     return routeMatch;
   };
 

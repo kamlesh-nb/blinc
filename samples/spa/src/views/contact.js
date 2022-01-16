@@ -2,7 +2,6 @@ import { div,label, input } from "../../../../src/types";
 
 const Contact = (props) => {
   const render = () => {
-    console.log(props);
     return div([
       label({text: "ID"}),
       input({value: props.params.id}),

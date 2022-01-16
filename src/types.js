@@ -31,8 +31,8 @@ types.forEach((t) => {
 })
 
 let activeLink;
-export function Link(props = {}) {
-  return a({
+exports.Link = (props = {}) => {
+  return exports.a({
     ...props,
     onclick: (e) => {
       if (activeLink) activeLink.classList.remove("active");
@@ -42,4 +42,4 @@ export function Link(props = {}) {
       history.pushState({path: e.target.pathname}, "", e.target.pathname)
     },
   });
-}
+};
