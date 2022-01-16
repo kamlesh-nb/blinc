@@ -28,13 +28,13 @@ const myApp = () => {
   const render = (state, dispatch) => {
     return div({ id: "root" }, [
       header({},[
-        nav({class: "bg-blue-600 border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-800"},[
-          div({class: "container flex flex-wrap justify-between items-center mx-auto"}, [
+        nav({class: "relative flex flex-wrap items-center justify-between px-2 py-3 bg-blue-500 mb-3"},[
+          div({class: "container px-4 mx-auto flex flex-wrap items-center justify-between"}, [
             div({class: "flex items-center md:order-2"}, [
-              ul({class: "flex py-1"},[
-              li([Link({ class: "block py-2 px-2 text-sm text-white hover:bg-white hover:text-blue-600 dark:hover:bg-white dark:text-gray-200 dark:hover:text-blue-600", text: "Home", href: "/" })]),
-              li([Link({ class: "block py-2 px-2 text-sm text-white hover:bg-white hover:text-blue-600 dark:hover:bg-white dark:text-gray-200 dark:hover:text-blue-600", text: "Contact", href: "/contact/9/kam" })]),
-              li([Link({ class: "block py-2 px-2 text-sm text-white hover:bg-white hover:text-blue-600 dark:hover:bg-white dark:text-gray-200 dark:hover:text-blue-600", text: "About", href: "/about" })]),
+              ul({class: "flex flex-col lg:flex-row list-none lg:ml-auto"},[
+              li([Link({ class: "px-2 py-1 flex items-center text-sm uppercase font-bold leading-snug text-white hover:opacity-75", text: "Home", href: "/" })]),
+              li([Link({ class: "px-2 py-1 flex items-center text-sm uppercase font-bold leading-snug text-white hover:opacity-75", text: "Contact", href: "/contact/9/kam" })]),
+              li([Link({ class: "px-2 py-1 flex items-center text-sm uppercase font-bold leading-snug text-white hover:opacity-75", text: "About", href: "/about" })]),
               state.isUserLoggedIn
                 ? li([
                     label({
@@ -51,7 +51,7 @@ const myApp = () => {
                       },
                     }),
                   ])
-                : li([Link({ class: "block py-2 px-2 text-sm text-white hover:bg-white hover:text-blue-600 dark:hover:bg-white dark:text-gray-200 dark:hover:text-blue", text: "Sign In", href: "/signin" })]),
+                : li([Link({ class: "px-2 py-1 flex items-center text-sm uppercase font-bold leading-snug text-white hover:opacity-75", text: "Sign In", href: "/signin" })]),
             ]),
           ]),
           ])

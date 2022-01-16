@@ -1,6 +1,6 @@
 import { div, br, form, input, button } from "../../../../src/types";
 import { Push } from '../../../../src/index';
-import { Input, Button, Form, Col } from "../components"
+import { Input, Button, Form, Col, Select } from "../components"
 import viewState from '../utils'
 
 let initialState = {
@@ -16,7 +16,14 @@ const SignUp = (props) => {
   let init = [initialState]
 
   const reducer = (msg, state) => {
-
+    switch (msg.type) {
+      case 'SIGN_UP':
+        break;
+      case 'SIGN_UP_SUCCESFULL':
+        break;
+      default:
+        break;
+    }
   }
 
   const render = (state, dispatch) => {
@@ -39,6 +46,16 @@ const SignUp = (props) => {
           value: fields.password,
           handleChange: setValue,
           caption: "Password"
+        }),
+        Select({
+          id: "idp",
+          caption: "Identity Provider",
+          options: [
+            {key: "aad", value: "Azure AD"},
+            {key: "cognito", value: "Cognito"},
+            {key: "gh", value: "GitHub"}
+          ],
+          handleChange: setValue
         }),
         Col({
           cols: 2,
