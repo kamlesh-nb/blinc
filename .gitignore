@@ -6,3 +6,7 @@ config.js
 .cache
 dist
 .DS_Store
+/index.js.map
+/types.js.map
+/index.js
+/types.js

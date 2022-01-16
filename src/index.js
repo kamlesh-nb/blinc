@@ -1,4 +1,4 @@
-const renderElement = (vNode) => {
+const  renderElement = async (vNode) => {
   if (typeof vNode === "string") {
     return document.createTextNode(vNode.toString());
   }
@@ -24,17 +24,17 @@ const renderElement = (vNode) => {
     if (typeof vNode.children[kid] !== "string") {
       vNode.children[kid].key = kid;
     }
-    var $child = renderElement(vNode.children[kid]);
+    var $child = await renderElement(vNode.children[kid]);
     $el.appendChild($child);
   }
 
   return $el;
 };
 
-const diffAttribs = (oNode, nNode, patches) => {
+const diffAttribs = async (oNode, nNode, patches) => {
 
   const set = (key) => {
-    patches.attribs.push(() => {
+    patches.attribs.push(async () => {
       if (typeof nNode.attrs[key] !== "function") {
         if (key === "text") {
           oNode.elem.textContent = nNode.attrs[key];
@@ -53,7 +53,7 @@ const diffAttribs = (oNode, nNode, patches) => {
  
   const remove = (key) => {
     if (!(key in nNode.attrs)) {
-      patches.attribs.push(() => {
+      patches.attribs.push(async () => {
         oNode.elem.removeAttribute(key);
         delete oNode.attrs[key];
       });
@@ -73,27 +73,27 @@ const diffAttribs = (oNode, nNode, patches) => {
   }
 };
 
-const diffKids = (oNode, nNode, patches) => {
+const diffKids = async (oNode, nNode, patches) => {
   const xLen = Object.keys(oNode.children).length;
   const yLen = Object.keys(nNode.children).length;
   const len = xLen > yLen ? xLen : yLen;
 
-  const patch = (i) => {
+  const patch = async (i) => {
     if (oNode.children[i] === undefined) {
-      patches.kids.push(() => {
-        const $el = renderElement(nNode.children[i]);
+      patches.kids.push(async () => {
+        const $el = await renderElement(nNode.children[i]);
         nNode.children[i].elem = $el;
         oNode.children[i] = {};
         Object.assign(oNode.children[i], nNode.children[i]);
         oNode.elem.appendChild($el);
       });
     } else if (nNode.children[i] === undefined) {
-      patches.kids.push(() => {
+      patches.kids.push(async () => {
         oNode.elem.removeChild(oNode.children[i].elem);
         delete oNode.children[i];
       });
     } else {
-      diff(oNode, i, oNode.children[i], nNode.children[i], patches);
+      await diff(oNode, i, oNode.children[i], nNode.children[i], patches);
     }
   };
 
@@ -102,42 +102,42 @@ const diffKids = (oNode, nNode, patches) => {
   }
 };
 
-const diff = (parent, index, vOldNode, vNewNode, patches) => {
+const diff = async (parent, index, vOldNode, vNewNode, patches) => {
   if (vOldNode !== null && vNewNode === undefined) {
   } else if (typeof vOldNode === "string" || typeof vNewNode === "string") {
     if (vOldNode !== vNewNode) {
-      patches.nodes.push(() => {
-        const $node = renderElement(vNewNode);
+      patches.nodes.push(async () => {
+        const $node = await renderElement(vNewNode);
         parent.elem.childNodes[index].replaceWith($node);
         parent.children[index] = vNewNode;
       });
     }
     return;
   } else if (vOldNode.tag !== vNewNode.tag) {
-    patches.nodes.push(() => {
+    patches.nodes.push(async () => {
       const $parent = vOldNode.elem.parentNode;
-      const $newNode = renderElement(vNewNode);
+      const $newNode = await renderElement(vNewNode);
       $parent.replaceChild($newNode, vOldNode.elem);
       Object.assign(vOldNode, vNewNode);
       vOldNode.elem = $newNode;
     });
   }
 
-  diffAttribs(vOldNode, vNewNode, patches);
-  diffKids(vOldNode, vNewNode, patches);
+  await diffAttribs(vOldNode, vNewNode, patches);
+  await diffKids(vOldNode, vNewNode, patches);
 };
 
-const diffAndPatch = (vOldNode, vNewNode) => {
+const diffAndPatch = async (vOldNode, vNewNode) => {
   const patches = { nodes: [], kids: [], attribs: [] };
-  diff({}, 0, vOldNode, vNewNode, patches);
-  patches.nodes.forEach((patch) => {
-    patch();
+  await diff({}, 0, vOldNode, vNewNode, patches);
+  patches.nodes.forEach(async (patch) => {
+    await patch();
   });
-  patches.attribs.forEach((patch) => {
-    patch();
+  patches.attribs.forEach(async (patch) => {
+    await patch();
   });
-  patches.kids.forEach((patch) => {
-    patch();
+  patches.kids.forEach(async (patch) => {
+    await patch();
   });
 };
 
@@ -161,9 +161,9 @@ const Element = (props = {}) => {
   let subs = [],
     unsubs = [];
 
-  const applyState = (nState) => {
+  const applyState = async (nState) => {
     var vNewDom = render(nState, dispatch);
-    diffAndPatch(vOldDom, vNewDom);
+    await diffAndPatch(vOldDom, vNewDom);
     Object.assign(oState, nState);
   };
 
@@ -176,9 +176,9 @@ const Element = (props = {}) => {
     applyState(nState[0]);
   };
 
-  const mount = ($node) => {
+  const mount = async ($node) => {
     vOldDom = oState ? render(oState, dispatch) : render();
-    $viewNode = renderElement(vOldDom);
+    $viewNode = await renderElement(vOldDom);
     if ($node.childNodes.length > 0) {
       $node.replaceChild($viewNode, $node.childNodes[0]);
     } else {
@@ -233,13 +233,13 @@ const Router = (state, dispatch, props = {}) => {
   const match = (route, requestPath) => {
     const paramNames = [];
     const regexPath =
-      route.path.replace(/([:*])(\w+)/g, (name) => {
+      route.path.replace(/([:*])(\w+)/g, (full, colon, name) => {
         paramNames.push(name);
         return "([^/]+)";
       }) + "(?:/|$)";
 
     let params = {};
-
+    
     const routeMatch = requestPath.match(new RegExp(regexPath));
     if (routeMatch !== null) {
       params = routeMatch
@@ -251,21 +251,27 @@ const Router = (state, dispatch, props = {}) => {
         }, null);
     }
     route["params"] = params;
+    console.log(route);
     return routeMatch;
   };
 
-  const mount = ($node, path) => {
+  const mount = async ($node, path) => {
     const route = routes.filter((route) => match(route, path))[0];
     if (!route) { throw new Error(`Route for path, ${ path } not defined...`);}
     if (currElem) { currElem.unMount(); }
     let props = { state, dispatch, params: route.params };
     currElem = Element(route.element(props));
-    currElem.mount($node);
+    await currElem.mount($node);
   };
 
-  document.addEventListener("readystatechange", (event) => {
+  document.addEventListener("readystatechange", async (event) => {
     if (event.target.readyState === "complete") {
-      mount(rootRef.node, '/');
+      if(history.state !== null){
+        let path = history.state.path;
+        await mount(rootRef.node, path);
+      } else {
+        await mount(rootRef.node, '/');
+      }
     }
   });
 
@@ -277,9 +283,9 @@ const Router = (state, dispatch, props = {}) => {
   return props;
 };
 
-const App = (props = {}) => {
+const App = async (props = {}) => {
   let e = Element(props);
-  e.mount(document.body);
+  await e.mount(document.body);
 };
 
 export { App, Element, Push, Router, Routes };

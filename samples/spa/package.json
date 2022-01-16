@@ -1,0 +1,28 @@
+{
+  "name": "spa",
+  "version": "1.0.0",
+  "description": "single page application example using blinc",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --open",
+    "build": "webpack --mode=production",
+    "serve": "superstatic dist --port 8081 --host 127.0.0.1 --compression true"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "blinc": "^0.0.4"
+  },
+  "devDependencies": {
+    "bootstrap": "^4.5.0",
+    "compression-webpack-plugin": "^4.0.0",
+    "css-loader": "^3.6.0",
+    "html-webpack-plugin": "^4.3.0",
+    "path": "^0.12.7",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  }
+}
