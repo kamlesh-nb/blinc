@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,500' rel='stylesheet' type='text/css'>
+    <title>Document</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <h3 class="heading">File Browser</h3>
+        <div class="file-browser">
+            <ul>
+                <li class="folder folder-open">
+                    Dashboard
+                    <ul>
+                        <li class="file">Accounts Module</li>
+                        <li class="file">Help Module</li>
+                    </ul>
+                </li>
+                <li class="folder">
+                    Transfers
+                    <ul>
+                        <li class="folder folder-open">
+                            Quick
+                            <ul>
+                                <li class="file">Disclosures</li>
+                                <li class="file">Modals</li>
+                            </ul>
+                        </li>
+                        <li class="file">Classic</li>
+                        <li class="folder">
+                            Scheduled
+                            <ul>
+                                <li class="folder"> Calendar
+                                    <ul>
+                                        <li class="file">Days</li>
+                                        <li class="file">Months</li>
+                                    </ul>
+                                </li>
+                                <li class="file">Modals</li>
+                            </ul>
+                        </li>
+                        <li class="file">History</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+</body>
+
+</html>
+
+<!-- npx tailwindcss -i ./style.css -o ./src/style.css --watch -->
