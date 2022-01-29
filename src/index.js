@@ -40,6 +40,8 @@ const diffAttribs = async (oNode, nNode, patches) => {
           oNode.elem.textContent = nNode.attrs[key];
         } else if (key === "ref") {
           nNode.attrs[key].node = oNode.elem;
+        } else if (key === "class") {
+          oNode.elem.className = nNode.attrs[key];
         } else {
           oNode.elem.setAttribute(key, nNode.attrs[key]);
         }
@@ -54,7 +56,11 @@ const diffAttribs = async (oNode, nNode, patches) => {
   const remove = (key) => {
     if (!(key in nNode.attrs)) {
       patches.attribs.push(async () => {
-        oNode.elem.removeAttribute(key);
+        if(key == "class"){
+          oNode.elem.className == "";
+        } else {
+          oNode.elem.removeAttribute(key);
+        }
         delete oNode.attrs[key];
       });
     }
